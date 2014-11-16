@@ -7,6 +7,7 @@
 
 'use strict';
 
+var fs = require('fs');
 var udf = 'undefined';
 var REG_URL = /^https?:\/\/(\w+\.)+[a-z]{2,5}(\/|\/[\w#!:.?+=&%@!\-\/]+)?$/i;
 var REG_EMAIL = /^\w+[-+.\w]*@([\w-]+\.)+[a-z]{2,5}$/i;
@@ -221,6 +222,43 @@ typeis.mongoId = function (anything) {
  */
 typeis.emptyData = function (any) {
     return any === undefined || any === null || any === '';
+};
+
+
+
+/**
+ * 判断路径是否为目录
+ * @param _path
+ * @returns {Boolean}
+ */
+typeis.directory = function (_path) {
+    var stat;
+
+    try {
+        stat = fs.statSync(_path);
+    } catch (err) {
+        return !1;
+    }
+
+    return stat.isDirectory();
+};
+
+
+/**
+ * 判断路径是否为文件
+ * @param _path
+ * @returns {Boolean}
+ */
+typeis.file = function (_path) {
+    var stat;
+
+    try {
+        stat = fs.statSync(_path);
+    } catch (err) {
+        return !1;
+    }
+
+    return stat.isFile();
 };
 
 
