@@ -12,5 +12,7 @@ module.exports = {
     // 数据出口
     dato: require('./libs/dato.js'),
     // 随机数
-    random: require('./libs/random.js')
+    random: require('./libs/random.js'),
+    // 加密
+    crypto: require('./libs/crypto.js')
 };
