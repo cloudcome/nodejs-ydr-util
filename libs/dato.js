@@ -295,7 +295,7 @@ exports.bytes = function (string, doubleLength) {
 
 /**
  * 按长度补0填充数字
- * @param  {Number} number 数字
+ * @param  {Number|String} number 数字
  * @param  {Number} length 长度
  * @return {String} 修复后的数字
  *
