@@ -7,9 +7,14 @@
 
 'use strict';
 
+var fs = require('fs');
+var path = require('path');
 var typeis = require('./typeis.js');
 var udf;
 var canListTypeArr = 'array object nodelist htmlcollection'.split(' ');
+var REG_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
+var REG_PATH = path.sep === '/' ? /\\/ : /\//g;
+var REG_URL = /\\/g;
 
 
 /**
@@ -307,4 +312,24 @@ exports.fillNumber = function (number, length) {
     }
 
     return (start + number).slice(-length);
+};
+
+
+/**
+ * 修正 path 路径为系统分隔符
+ * @param p
+ * @returns {String}
+ */
+exports.fixPath = function (p) {
+    return p.replace(REG_PATH, path.sep);
+};
+
+
+/**
+ * 转换路径为 URL 格式
+ * @param p
+ * @returns {string}
+ */
+exports.toURLPath = function (p) {
+    return String(p).replace(REG_URL, '/');
 };
