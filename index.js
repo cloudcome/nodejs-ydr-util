@@ -7,12 +7,14 @@
 'use strict';
 
 module.exports = {
-    // 数据类型
-    typeis: require('./libs/typeis.js'),
+    // 加密
+    crypto: require('./libs/crypto.js'),
+    // 日期
+    date: require('./libs/date.js'),
     // 数据出口
     dato: require('./libs/dato.js'),
     // 随机数
     random: require('./libs/random.js'),
-    // 加密
-    crypto: require('./libs/crypto.js')
+    // 数据类型
+    typeis: require('./libs/typeis.js')
 };
