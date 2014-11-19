@@ -2,6 +2,7 @@
  * 判断数据类型
  * @author ydr.me
  * @create 2014-11-15 12:54
+ * @update 2014年11月19日10:20:51
  */
 
 
@@ -11,6 +12,7 @@ var udf = 'undefined';
 var REG_URL = /^https?:\/\/(\w+\.)+[a-z]{2,5}(\/|\/[\w#!:.?+=&%@!\-\/]+)?$/i;
 var REG_EMAIL = /^\w+[-+.\w]*@([\w-]+\.)+[a-z]{2,5}$/i;
 var REG_MOMGODB_ID = /^[\da-z]{24}$/;
+var fs = require('fs');
 
 
 /**
@@ -130,6 +132,9 @@ var makeStatic = function (tp) {
 };
 
 
+/**
+ * 复制静态方法
+ */
 for (; i < jud.length; i++) {
     makeStatic(jud[i]);
 }
@@ -205,7 +210,6 @@ typeis.validDate = function (anything) {
  * @version 1.0
  * 2014年5月3日23:11:37
  */
-
 typeis.mongoId = function (anything) {
     return typeof  anything !== udf && typeof anything._bsontype !== udf &&
         anything._bsontype === 'ObjectId' || REG_MOMGODB_ID.test(anything.toString());
@@ -221,6 +225,42 @@ typeis.mongoId = function (anything) {
  */
 typeis.emptyData = function (any) {
     return any === undefined || any === null || any === '';
+};
+
+
+/**
+ * 判断路径是否为文件夹
+ * @param path
+ * @returns {*}
+ */
+typeis.directory = function (path) {
+    var stat;
+
+    try {
+        stat = fs.statSync(path);
+    } catch (err) {
+        return false;
+    }
+
+    return stat.isDirectory();
+};
+
+
+/**
+ * 判断路径是否为文件
+ * @param path
+ * @returns {*}
+ */
+typeis.file = function (path) {
+    var stat;
+
+    try {
+        stat = fs.statSync(path);
+    } catch (err) {
+        return false;
+    }
+
+    return stat.isFile();
 };
 
 
