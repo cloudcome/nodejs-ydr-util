@@ -13,6 +13,8 @@ module.exports = {
     date: require('./libs/date.js'),
     // 数据出口
     dato: require('./libs/dato.js'),
+    // HTTP status
+    httpStatus: require('./libs/httpStatus.js'),
     // MIME
     mime: require('./libs/mime.js'),
     // 随机数

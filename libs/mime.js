@@ -6,7 +6,7 @@
 
 'use strict';
 
-var mime = require('./mime.json');
+var mimeMap = require('./mime.json');
 
 /**
  * 获取 MIME 的相应类型
@@ -25,7 +25,7 @@ exports.get = function (extname, defaultContentType) {
     extname = String(extname).toLowerCase();
     defaultContentType = defaultContentType || 'application/octect-stream';
 
-    return mime[extname] || defaultContentType;
+    return mimeMap[extname] || defaultContentType;
 };
 
 
@@ -38,7 +38,14 @@ exports.get = function (extname, defaultContentType) {
 exports.set = function (extname, contentType) {
     extname = String(extname).toLowerCase();
     contentType = String(contentType).toLowerCase();
-    mime[extname] = contentType;
+    mimeMap[extname] = contentType;
 
-    return mime;
+    return mimeMap;
 };
+
+
+
+///////////////////////////////////////////////////////////////////
+//console.log(exports.get('.jpg'));
+//console.log(exports.set('.jpg', 'hehe/jpg'));
+//console.log(exports.get('.jpg'));
