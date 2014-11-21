@@ -237,7 +237,7 @@ typeis.directory = function (path) {
     var stat;
 
     try {
-        stat = fs.statSync(path);
+        stat = fs.lstatSync(path);
     } catch (err) {
         return false;
     }
@@ -255,7 +255,7 @@ typeis.file = function (path) {
     var stat;
 
     try {
-        stat = fs.statSync(path);
+        stat = fs.lstatSync(path);
     } catch (err) {
         return false;
     }
