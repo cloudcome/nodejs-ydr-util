@@ -8,6 +8,8 @@
 
 module.exports = {
     // 加密
+    class: require('./libs/class.js'),
+    // 加密
     crypto: require('./libs/crypto.js'),
     // 日期
     date: require('./libs/date.js'),
