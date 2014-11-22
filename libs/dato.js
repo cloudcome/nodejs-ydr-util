@@ -7,14 +7,15 @@
 
 'use strict';
 
+var fs = require('fs');
 var path = require('path');
 var typeis = require('./typeis.js');
 var udf;
 var canListTypeArr = 'array object nodelist htmlcollection'.split(' ');
-var REG_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
+var REG_STRING_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
 var REG_PATH = path.sep === '/' ? /\\/ : /\//g;
 var REG_URL = /\\/g;
-
+var REG_NOT_UTF16_SINGLE = /[^\x00-\xff]{2}/g;
 
 
 /**
@@ -251,6 +252,7 @@ exports.compare = function (obj1, obj2) {
 };
 
 
+
 /**
  * 修正正则字符串
  * @param regExpString
@@ -261,7 +263,7 @@ exports.compare = function (obj1, obj2) {
  * // => '\/'
  */
 exports.fixRegExp = function (regExpString) {
-    return regExpString.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&');
+    return regExpString.replace(REG_STRING_FIX, '\\$&');
 };
 
 
@@ -293,9 +295,32 @@ exports.bytes = function (string, doubleLength) {
 };
 
 
+
+
+
+
+/**
+ * 计算字符串长度
+ * 双字节的字符使用 length 属性计算不准确
+ * @ref http://es6.ruanyifeng.com/#docs/string
+ * @param string {String} 原始字符串
+ *
+ * @example
+ * var s = "𠮷";
+ * s.length = 2;
+ * dato.length(s);
+ * // => 3
+ */
+exports.length = function (string) {
+    string += '';
+
+    return string.replace(REG_NOT_UTF16_SINGLE, '*').length;
+};
+
+
 /**
  * 按长度补0填充数字
- * @param  {Number} number 数字
+ * @param  {Number|String} number 数字
  * @param  {Number} length 长度
  * @return {String} 修复后的数字
  *
@@ -315,16 +340,13 @@ exports.fillNumber = function (number, length) {
 };
 
 
-
-
-
 /**
- * 修复正则字符串
- * @param str
- * @returns {string}
+ * 修正 path 路径为系统分隔符
+ * @param p
+ * @returns {String}
  */
-exports.fixRegExp = function (str) {
-    return String(str).replace(REG_FIX, "\\$&");
+exports.fixPath = function (p) {
+    return p.replace(REG_PATH, path.sep);
 };
 
 
@@ -335,15 +357,4 @@ exports.fixRegExp = function (str) {
  */
 exports.toURLPath = function (p) {
     return String(p).replace(REG_URL, '/');
-};
-
-
-
-/**
- * 修正 path 路径为系统分隔符
- * @param pt
- * @returns {String}
- */
-module.exports.fixPath = function (pt) {
-    return pt.replace(REG_PATH, path.sep);
 };
