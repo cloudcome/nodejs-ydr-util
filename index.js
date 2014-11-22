@@ -22,5 +22,7 @@ module.exports = {
     // 随机数
     random: require('./libs/random.js'),
     // 数据类型
+    request: require('./libs/request.js'),
+    // 数据类型
     typeis: require('./libs/typeis.js')
 };
