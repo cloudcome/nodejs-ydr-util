@@ -72,7 +72,7 @@ function _request(options, callback) {
             bufferList.push(new Buffer(chunk, 'utf8'));
         }).on('end', function () {
             var data = Buffer.concat(bufferList).toString();
-            callback(null, data);
+            callback(null, data, res);
         }).on('error', callback);
     });
 
