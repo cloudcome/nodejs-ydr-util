@@ -30,39 +30,47 @@ exports.md5 = function (data) {
 
 
 /**
- * 文件修改时间的 etag 计算
+ * 文件内容的 etag 计算
  * @param file {String} 文件绝对路径
- * @param [callback] {Function} 回调，有回调表示读取文件流进行MD5计算
+ * @param callback {Function} 读取文件流进行MD5计算
  * @returns {string}
  */
 exports.etag = function (file, callback) {
     var md5;
-    var stats;
     var stream;
+
+    md5 = crypto.createHash('md5');
+    stream = fs.ReadStream(file);
+    stream.on('data', function (d) {
+        md5.update(d);
+    });
+    stream.on('end', function () {
+        var d = md5.digest('hex');
+
+        callback(null, d);
+    });
+    stream.on('error', callback);
+};
+
+
+/**
+ * 文件最后修改时间的 md5 计算
+ * @param file {String} 文件绝对路径
+ * @returns {string} md5 值
+ */
+exports.lastModified = function (file) {
+    var stats;
     var ret;
 
-    if (callback) {
-        md5 = crypto.createHash('md5');
-        stream = fs.ReadStream(file);
-        stream.on('data', function (d) {
-            md5.update(d);
-        });
-        stream.on('end', function () {
-            var d = md5.digest('hex');
-
-            callback(null, d);
-        });
-        stream.on('error', callback);
-    } else {
-        try {
-            stats = fs.statSync(file);
-        } catch (err) {
-            stats = null;
-        }
-
-        ret = stats ? String(new Date(stats.mtime).getTime()) : '0';
-        return this.md5(ret);
+    try {
+        stats = fs.statSync(file);
+    } catch (err) {
+        stats = null;
     }
+
+    ret = stats ? String(new Date(stats.mtime).getTime()) : '0';
+
+    return this.md5(ret);
 };
 
 
