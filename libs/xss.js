@@ -20,7 +20,7 @@ var REG_CLOSE_TAGNAME = /(?!```)<([a-z\d]+)\b[\s\S]*?>([\s\S]*?)<\/\1>(?!```)/ig
 var REG_PRE = /```[\s\S]*?```/g;
 var REG_JAVASCRIPT = /^\s*?javascript/i;
 // 影响页面的危险标签
-var dangerTagNameList = 'script iframe body head html'.split(' ');
+var dangerTagNameList = 'script iframe frameset body head html'.split(' ');
 var defaults = {
     hosts: [],
     filter: function (href, title, text) {
