@@ -25,7 +25,9 @@
   "bugs": {
     "url": "https://github.com/cloudcome/nodejs-ydr-util/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "marked": "^0.3.2"
+  },
   "devDependencies": {},
   "licenses": "MIT"
 }

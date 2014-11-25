@@ -252,7 +252,6 @@ exports.compare = function (obj1, obj2) {
 };
 
 
-
 /**
  * 修正正则字符串
  * @param regExpString
@@ -293,10 +292,6 @@ exports.bytes = function (string, doubleLength) {
 
     return k;
 };
-
-
-
-
 
 
 /**

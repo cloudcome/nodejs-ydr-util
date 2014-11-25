@@ -267,42 +267,6 @@ typeis.file = function (_path) {
 
 
 /**
- * 判断路径是否为文件夹
- * @param path
- * @returns {*}
- */
-typeis.directory = function (path) {
-    var stat;
-
-    try {
-        stat = fs.lstatSync(path);
-    } catch (err) {
-        return false;
-    }
-
-    return stat.isDirectory();
-};
-
-
-/**
- * 判断路径是否为文件
- * @param path
- * @returns {*}
- */
-typeis.file = function (path) {
-    var stat;
-
-    try {
-        stat = fs.lstatSync(path);
-    } catch (err) {
-        return false;
-    }
-
-    return stat.isFile();
-};
-
-
-/**
  * @name string
  * @name number
  * @name function

@@ -2,6 +2,10 @@
 
 # APIS
 
+## class
+- .create
+- .inherit
+
 
 ## crypto
 - .md5
@@ -10,16 +14,41 @@
 - .decode
 
 
+## date
+- .format
+- .parse
+- .isLeapYear
+- .getDaysInMonth
+- .getDaysInYear
+- .getWeeksInYear
+- .getWeeksInMonth
+- .from
+- .from
+
+
 ## dato
-- .each
 - .parseInt
 - .parseFloat
+- .each
 - .extend
 - .toArray
 - .compare
 - .fixRegExp
 - .bytes
+- .length
 - .fillNumber
+- .fixPath
+- .toURLPath
+
+
+## httpStatus
+- .get
+- .set
+
+
+## mime
+- .get
+- .set
 
 
 ## random
@@ -37,3 +66,5 @@
 - .validDate
 - .mongoId
 - .emptyData
+- .directory
+- .file

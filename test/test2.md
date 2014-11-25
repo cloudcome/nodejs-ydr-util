@@ -1,4 +1,12 @@
 <http://ydr.me/>
+<http://abc.ydr.me/>
+<//def.ddd.cc.ydr.me/>
+</me/>
+<//baidu.com>
+<http://baidu.com>
+<http://123.baidu.ydr.com>
+
+<javascript:alert(456);>
 
 </http://ydr.me/>
 
