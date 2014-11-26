@@ -6,6 +6,7 @@
 
 'use strict';
 
+var fs = require('fs');
 var url = require('url');
 var http = require('http');
 var https = require('https');
@@ -15,60 +16,24 @@ var defaults = {
     method: 'GET',
     encoding: 'utf8'
 };
-
-
-/**
- * HEAD 请求
- * @param url
- * @param [options]
- * @param callback
- */
-exports.head = function (url, options, callback) {
-    if (typeis(options) === 'function') {
-        callback = options;
-        options = {};
-    }
-
-    options.url = url;
-    options.method = 'HEAD';
-    _request(options, callback);
-};
-
+var methods = 'head get post put delete'.split(' ');
+var Stream = require('stream');
 
 /**
- * GET 请求
- * @param url
- * @param [options]
- * @param callback
+ * HEAD/GET/POST/PUT/DELETE 请求
  */
-exports.get = function (url, options, callback) {
-    if (typeis(options) === 'function') {
-        callback = options;
-        options = {};
-    }
+methods.forEach(function (method) {
+    exports[method] = function (url, options, callback) {
+        if (typeis(options) === 'function') {
+            callback = options;
+            options = {};
+        }
 
-    options.url = url;
-    options.method = 'GET';
-    _request(options, callback);
-};
-
-
-/**
- * POST 请求
- * @param url
- * @param [options]
- * @param callback
- */
-exports.post = function (url, options, callback) {
-    if (typeis(options) === 'function') {
-        callback = options;
-        options = {};
-    }
-
-    options.url = url;
-    options.method = 'POST';
-    _request(options, callback);
-};
+        options.url = url;
+        options.method = method;
+        _request(options, callback);
+    };
+});
 
 
 /**
@@ -79,7 +44,8 @@ exports.post = function (url, options, callback) {
  * @param [options.headers=null] {Object} 请求头
  * @param [options.agent=null] {String} 请求代理信息
  * @param [options.encoding="utf8"] {String} 响应处理编码，可选 utf8/binary
- * @param [options.body=""] {String} POST 写入数据
+ * @param [options.body=""] {String|Stream} POST/PUT 写入数据
+ * @param [options.file=""] {String} POST/PUT 写入的文件地址
  * @param callback
  * @private
  */
@@ -87,18 +53,42 @@ function _request(options, callback) {
     var requestOptions = url.parse(options.url);
     var _http = requestOptions.protocol === 'https:' ? https : http;
     var body = options.body || '';
+    var bodyLength = 0;
+    var file = options.file || '';
+    var req;
+    var canSend;
+    var stat;
 
     options = dato.extend(true, {}, defaults, options);
     requestOptions.headers = options.headers;
     requestOptions.agent = options.agent;
     requestOptions.method = options.method.toUpperCase();
+    canSend = requestOptions.method !== 'GET' && requestOptions.method !== 'HEAD';
 
-    var req = _http.request(requestOptions, function (res) {
+    if (canSend) {
+        if (file) {
+            try {
+                stat = fs.statSync(file);
+            } catch (err) {
+                return callback(err);
+            }
+
+            bodyLength = stat.size;
+            body = fs.createReadStream(file);
+        }
+
+        if (!bodyLength) {
+            bodyLength = body.length;
+        }
+    }
+
+    options.headers['Content-Length'] = bodyLength;
+    req = _http.request(requestOptions, function (res) {
         var bufferList = [];
         var binarys = '';
         var isUtf8 = options.encoding === 'utf8';
 
-        if (options.method === 'HEAD') {
+        if (requestOptions.method === 'HEAD') {
             req.abort();
             return callback(null, res.headers, res);
         }
@@ -126,11 +116,16 @@ function _request(options, callback) {
 
     req.on('error', callback);
 
-    if (requestOptions.method === 'POST') {
-        req.write(body);
+    if (canSend) {
+        //steam
+        if (body instanceof Stream) {
+            body.pipe(req);
+        } else {
+            req.end(body);
+        }
+    } else {
+        req.end();
     }
-
-    req.end();
 }
 
 
