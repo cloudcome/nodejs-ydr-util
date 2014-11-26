@@ -101,7 +101,7 @@ function _log(err, req, res, next) {
     // 生产环境
     if (options.env.indexOf('pro') > -1) {
         if (!options.path) {
-            console.error('please set options about path');
+            console.error('please set ydr-util.log options about path');
             process.exit(-1);
         }
 
