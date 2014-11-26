@@ -10,7 +10,18 @@
   "keywords": [
     "cloudcome",
     "ydr.me",
-    "util"
+    "util",
+    "class",
+    "crypto",
+    "date",
+    "dato",
+    "httpStatus",
+    "log",
+    "mime",
+    "random",
+    "request",
+    "typeis",
+    "xss"
   ],
   "author": {
     "name": "cloudcome",
