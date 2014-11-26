@@ -46,6 +46,11 @@
 - .set
 
 
+## log
+- log(err, req, res, next)
+- .setOptions(key, val)
+
+
 ## mime
 - .get
 - .set
