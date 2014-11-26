@@ -61,8 +61,6 @@ log.setOptions = function (key, val) {
 module.exports = log;
 
 
-
-
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
@@ -76,9 +74,9 @@ module.exports = log;
  * @param next
  * @private
  */
-function _log(err, req, res, next){
+function _log(err, req, res, next) {
     var time = date.format('YYYY年MM月DD日 HH:mm:ss.SSS 星期e a');
-    var request = req.method + ' ' + res.statusCode + ' ' + req.url;
+    var request = req.method + ' ' + req.url;
     var ip = req.ip || req.headers['x-forwarded-for'] || '0.0.0.0';
     var query = JSON.stringify(req.query || {}, null, 4);
     var body = JSON.stringify(req.body || {}, null, 4);
