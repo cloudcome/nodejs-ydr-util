@@ -57,6 +57,12 @@
 - .guid()
 
 
+## request
+- head(url, [options], callback)
+- get(url, [options], callback)
+- post(url, [options], callback)
+
+
 ## typeis
 - typeis()
 - .plainObject
@@ -68,3 +74,8 @@
 - .emptyData
 - .directory
 - .file
+
+
+## xss
+- mdSafe
+- mdRender
