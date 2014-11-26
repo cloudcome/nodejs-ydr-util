@@ -19,7 +19,64 @@ var options = {
     errorFile: './YYYY/MM/YYYY-MM-DD.err.log',
     accessFile: './YYYY/MM/YYYY-MM-DD.out.log'
 };
-var log = function (err, req, res, next) {
+var log = function () {
+    var fn1 = function (req, res, next) {
+        _log(null, req, res, next);
+    };
+    var fn2 = function (err, req, res, next) {
+        _log(err, req, res, next);
+    };
+
+    return [fn1, fn2];
+};
+
+
+/**
+ * 设置配置
+ * @param key
+ * @param val
+ */
+log.setOptions = function (key, val) {
+    var map = {};
+
+    if (arguments.length === 2) {
+        map[key] = val;
+    } else {
+        map = key;
+    }
+
+    dato.extend(true, options, map);
+};
+
+/**
+ * 日志记录
+ * @type {Function}
+ *
+ * @example
+ * var app = require('express')();
+ * app.use('has log middleware');
+ * app.use(log);
+ * app.use('no log middleware');
+ */
+module.exports = log;
+
+
+
+
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
+
+
+/**
+ * 日志记录
+ * @param err
+ * @param req
+ * @param res
+ * @param next
+ * @private
+ */
+function _log(err, req, res, next){
     var time = date.format('YYYY年MM月DD日 HH:mm:ss.SSS 星期e a');
     var request = req.method + ' ' + res.statusCode + ' ' + req.url;
     var ip = req.ip || req.headers['x-forwarded-for'] || '0.0.0.0';
@@ -63,35 +120,4 @@ var log = function (err, req, res, next) {
     }
 
     next();
-};
-
-
-/**
- * 设置配置
- * @param key
- * @param val
- */
-log.setOptions = function (key, val) {
-    var map = {};
-
-    if (arguments.length === 2) {
-        map[key] = val;
-    } else {
-        map = key;
-    }
-
-    dato.extend(true, options, map);
-};
-
-/**
- * 日志记录
- * @type {Function}
- *
- * @example
- * var app = require('express')();
- * app.use('has log middleware');
- * app.use(log);
- * app.use('no log middleware');
- */
-module.exports = log;
-
+}
