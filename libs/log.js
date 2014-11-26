@@ -16,8 +16,7 @@ var options = {
     // 存放路径
     path: null,
     // YYYY年MM月DD日 HH:mm:ss.SSS 星期e a
-    errorFile: './YYYY/MM/YYYY-MM-DD.err.log',
-    accessFile: './YYYY/MM/YYYY-MM-DD.out.log'
+    name: './YYYY/MM/YYYY-MM-DD'
 };
 var log = function () {
     var fn1 = function (req, res, next) {
@@ -80,7 +79,7 @@ function _log(err, req, res, next) {
     var ip = req.ip || req.headers['x-forwarded-for'] || '0.0.0.0';
     var query = JSON.stringify(req.query || {}, null, 4);
     var body = JSON.stringify(req.body || {}, null, 4);
-    var file = date.format(err ? options.errorFile : options.accessFile);
+    var file = options.name + date.format(err ? '-err.log' : '-out.log');
     var txt =
             '##################################################################\n' +
             'time: ' + time + '\n' +
