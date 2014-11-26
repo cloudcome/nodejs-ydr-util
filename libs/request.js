@@ -10,6 +10,29 @@ var url = require('url');
 var http = require('http');
 var https = require('https');
 var typeis = require('./typeis.js');
+var dato = require('./dato.js');
+var defaults = {
+    method: 'GET',
+    encoding: 'utf8'
+};
+
+
+/**
+ * HEAD 请求
+ * @param url
+ * @param [options]
+ * @param callback
+ */
+exports.head = function (url, options, callback) {
+    if (typeis(options) === 'function') {
+        callback = options;
+        options = {};
+    }
+
+    options.url = url;
+    options.method = 'HEAD';
+    _request(options, callback);
+};
 
 
 /**
@@ -51,36 +74,81 @@ exports.post = function (url, options, callback) {
 /**
  * 远程请求
  * @param options
+ * @param options.url {String} 请求地址
+ * @param [options.method="GET"] {String} 请求方法
+ * @param [options.headers=null] {Object} 请求头
+ * @param [options.agent=null] {String} 请求代理信息
+ * @param [options.encoding="utf8"] {String} 响应处理编码，可选 utf8/binary
+ * @param [options.body=""] {String} POST 写入数据
  * @param callback
  * @private
  */
 function _request(options, callback) {
-    var parser = url.parse(options.url);
-    var _http = parser.protocol === 'https:' ? https : http;
+    var requestOptions = url.parse(options.url);
+    var _http = requestOptions.protocol === 'https:' ? https : http;
     var body = options.body || '';
 
-    parser.headers = options.headers;
-    parser.agent = options.agent;
-    parser.method = options.method.toUpperCase() || 'GET';
+    options = dato.extend(true, {}, defaults, options);
+    requestOptions.headers = options.headers;
+    requestOptions.agent = options.agent;
+    requestOptions.method = options.method.toUpperCase();
 
-    var req = _http.request(parser, function (res) {
+    var req = _http.request(requestOptions, function (res) {
         var bufferList = [];
+        var binarys = '';
+        var isUtf8 = options.encoding === 'utf8';
 
-        res.setEncoding('utf8');
+        if (options.method === 'HEAD') {
+            req.abort();
+            return callback(null, res.headers, res);
+        }
+
+        res.setEncoding(options.encoding);
 
         res.on('data', function (chunk) {
-            bufferList.push(new Buffer(chunk, 'utf8'));
+            if (isUtf8) {
+                bufferList.push(new Buffer(chunk, 'utf8'));
+            } else {
+                binarys += chunk;
+            }
         }).on('end', function () {
-            var data = Buffer.concat(bufferList).toString();
+            var data;
+
+            if (isUtf8) {
+                data = Buffer.concat(bufferList).toString();
+            } else {
+                data = binarys;
+            }
+
             callback(null, data, res);
         }).on('error', callback);
     });
 
     req.on('error', callback);
 
-    if (parser.mdthod === 'POST') {
+    if (requestOptions.method === 'POST') {
         req.write(body);
     }
 
     req.end();
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//exports.head('http://ydr.me/favicon.ico', function (err, headers, res) {
+//    console.log(headers);
+//});
+
+//exports.get('http://ydr.me', function (err, body, res) {
+//    console.log(body);
+//});
+
+//var fs = require('fs');
+//var path = require('path');
+//exports.get('http://ydr.me/favicon.ico', {
+//    encoding: 'binary'
+//}, function (e, binary, res) {
+//    var file = path.join(__dirname, '../test/ydr.me.ico');
+//    fs.writeFileSync(file, binary, 'binary');
+//});
