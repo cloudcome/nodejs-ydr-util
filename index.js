@@ -17,6 +17,8 @@ module.exports = {
     dato: require('./libs/dato.js'),
     // HTTP status
     httpStatus: require('./libs/httpStatus.js'),
+    // log
+    log: require('./libs/log.js'),
     // MIME
     mime: require('./libs/mime.js'),
     // 随机数
@@ -24,5 +26,7 @@ module.exports = {
     // 数据类型
     request: require('./libs/request.js'),
     // 数据类型
-    typeis: require('./libs/typeis.js')
+    typeis: require('./libs/typeis.js'),
+    // 数据类型
+    xss: require('./libs/xss.js')
 };
