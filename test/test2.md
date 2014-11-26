@@ -1,12 +1,14 @@
 <http://ydr.me/>
 <http://abc.ydr.me/>
 <//def.ddd.cc.ydr.me/>
-</me/>
+[123](/abc/def/)
 <//baidu.com>
 <http://baidu.com>
 <http://123.baidu.ydr.com>
 
-<javascript:alert(456);>
+[哈哈](javascript:alert(123);)
+
+&lt;a javascript:alert(456);&gt;呵呵1&lt;b&gt;呵呵2&lt;/a&gt;呵呵3</a>
 
 </http://ydr.me/>
 
