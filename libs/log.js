@@ -79,7 +79,9 @@ function _log(err, req, res, next) {
     var ip = req.ip || req.headers['x-forwarded-for'] || '0.0.0.0';
     var query = JSON.stringify(req.query || {}, null, 4);
     var body = JSON.stringify(req.body || {}, null, 4);
-    var file = options.name + date.format(err ? '-err.log' : '-out.log');
+    var name = date.format(options.name);
+    var suffix = err ? '-err.log' : '-out.log';
+    var file = name + suffix;
     var txt =
             '##################################################################\n' +
             'time: ' + time + '\n' +
@@ -107,7 +109,7 @@ function _log(err, req, res, next) {
         file = path.join(options.path, file);
         fs.createFile(file, function (e) {
             if (!e) {
-                fs.appendFile(file, txt, function () {
+                fs.appendFile(file, txt + '\n', function () {
                     // ignore
                 });
             }
@@ -118,3 +120,5 @@ function _log(err, req, res, next) {
 
     next();
 }
+
+
