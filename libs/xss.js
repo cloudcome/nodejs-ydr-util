@@ -1,5 +1,5 @@
 /*!
- * 文件描述
+ * xss 安全【非常重要】
  * @author ydr.me
  * @create 2014-11-22 23:11
  */
@@ -18,44 +18,45 @@ var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
 // 自动关闭标签是安全的，如 br、hr、img 等
 var REG_CLOSE_TAGNAME = /(?!```)<([a-z\d]+)\b[\s\S]*?>([\s\S]*?)<\/\1>(?!```)/ig;
 var REG_PRE = /```[\s\S]*?```/g;
-var REG_JAVASCRIPT = /^\s*?javascript/i;
+var REG_PATH = /^(\/|\.{0,2})(\/[^/]+)+$/;
 // 影响页面的危险标签
 var dangerTagNameList = 'script iframe frameset body head html'.split(' ');
-var defaults = {
-    hosts: [],
-    filter: function (href, title, text) {
-        return _buildLink(href, title, text, true);
+var filterDefaults = {
+    /**
+     * link 配置
+     * 1、无域地址都在当前窗口打开
+     * 2、符合 hosts 内的域名都在当前窗口打开
+     * 3、其他都在新窗口打开
+     * 4、不合法的URL直接返回空
+     */
+    link: {
+        /**
+         * 不需要新窗口打开的域名
+         * @type Array
+         */
+        hosts: [],
+        filter: function (href, title, text) {
+            return _buildLink(href, title, text, true);
+        }
     }
 };
 
 
 /**
- * markdown 语法过滤，虽然 markdown 支持兼容 HTML 标签，但为了安全考虑，这里必须去掉
- * 相当一部分的标签，最后进行 markdown 解析，输出 HTML 文档
+ * markdown 语法安全过滤，虽然 markdown 支持兼容 HTML 标签，但为了安全考虑，
+ * 这里必须去掉相当一部分的标签
  * @param source {String} 原始内容
  * @param [moreDangerTagNameList] {Array} 更多危险标签，危险标签是会被直接删除的
- * @param [linkFilterOptions] {Object} 链接 target 过滤配置
  * @returns {string} 过滤后的内容
  */
-exports.markdown = function (source, moreDangerTagNameList, linkFilterOptions) {
+exports.mdSafe = function (source, moreDangerTagNameList) {
     var list = source.split(REG_PRE);
     var pres = source.match(REG_PRE) || [''];
     var ret = '';
     var i = 0;
-    var args = arguments;
-    var arg1 = args[1];
-    var arg2 = args[2];
-    var markedRender = new marked.Renderer();
 
-    if (typeis(arg1) === 'object') {
-        linkFilterOptions = arg1;
+    if (typeis(moreDangerTagNameList) !== 'array') {
         moreDangerTagNameList = [];
-    } else if (typeis(arg1) === 'array') {
-        moreDangerTagNameList = arg1;
-        linkFilterOptions = typeis(arg2) === 'object' ? arg2 : null;
-    } else {
-        moreDangerTagNameList = [];
-        linkFilterOptions = null;
     }
 
     // 过滤不安全 HTML 标签
@@ -79,7 +80,19 @@ exports.markdown = function (source, moreDangerTagNameList, linkFilterOptions) {
         ret += item;
     });
 
-    linkFilterOptions = dato.extend(true, {}, defaults, linkFilterOptions);
+    return ret;
+};
+
+
+/**
+ * markdown 内容渲染成 HTML 内容
+ * @param source {String} 原始 markdown 内容
+ * @param [linkFilterOptions] {Object} 配置
+ */
+exports.mdRender = function (source, filterOptions) {
+    var markedRender = new marked.Renderer();
+
+    filterOptions = dato.extend(true, {}, filterDefaults, filterOptions);
 
     // 定义 A 链接的 target
     markedRender.link = function (href, title, text) {
@@ -88,7 +101,8 @@ exports.markdown = function (source, moreDangerTagNameList, linkFilterOptions) {
         var host = parse.host;
         var inHost = false;
 
-        if (REG_JAVASCRIPT.test(href)) {
+        // 非 URL && 非 PATH
+        if (!typeis.url(href) && !REG_PATH.test(href)) {
             return '';
         }
 
@@ -96,7 +110,7 @@ exports.markdown = function (source, moreDangerTagNameList, linkFilterOptions) {
             return _buildLink(href, title, text, false);
         }
 
-        dato.each(linkFilterOptions.hosts, function (index, item) {
+        dato.each(filterOptions.link.hosts, function (index, item) {
             if (_regExp(item).test(host)) {
                 inHost = true;
                 return false;
@@ -109,12 +123,11 @@ exports.markdown = function (source, moreDangerTagNameList, linkFilterOptions) {
         }
 
         // 其他的使用传入对象处理
-        return linkFilterOptions.filter(href, title, text);
+        return filterOptions.link.filter(href, title, text);
     };
 
     marked.setOptions({renderer: markedRender});
-
-    return marked(ret);
+    return marked(source);
 };
 
 
@@ -166,13 +179,15 @@ function _regExp(regstr) {
 }
 
 
-var fs = require('fs');
-var path = require('path');
-var file = path.join(__dirname, '../test/test.md');
-var file2 = path.join(__dirname, '../test/test2.html');
-var markd = fs.readFileSync(file, 'utf8');
-var html2 = exports.markdown(markd, {
-    hosts: ['*.ydr.me']
-});
-fs.writeFileSync(file2, html2, 'utf8')
-
+//var fs = require('fs');
+//var path = require('path');
+//var file1 = path.join(__dirname, '../test/test.md');
+//var file2 = path.join(__dirname, '../test/test2.md');
+//var file3 = path.join(__dirname, '../test/test2.html');
+//var markdown1 = fs.readFileSync(file1, 'utf8');
+//var markdown2 = exports.mdSafe(markdown1);
+//var html3 = exports.mdRender(markdown2);
+//
+//fs.writeFileSync(file2, markdown2, 'utf8');
+//fs.writeFileSync(file3, html3, 'utf8');
+//
