@@ -14,9 +14,11 @@ var typeis = require('./typeis.js');
 var dato = require('./dato.js');
 var defaults = {
     method: 'GET',
-    encoding: 'utf8'
-};
-var methods = 'head get post put delete'.split(' ');
+    encoding: 'utf8',
+    headers: {},
+    body: null,
+    file: null
+};var methods = 'head get post put delete'.split(' ');
 var Stream = require('stream');
 
 /**
@@ -50,6 +52,10 @@ methods.forEach(function (method) {
  * @private
  */
 function _request(options, callback) {
+    if(typeis(options.url) !== 'string'){
+        return callback(new Error('request url must be a string'));
+    }
+
     var requestOptions = url.parse(options.url);
     var _http = requestOptions.protocol === 'https:' ? https : http;
     var body = options.body || '';
