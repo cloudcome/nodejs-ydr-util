@@ -25,13 +25,18 @@ var Stream = require('stream');
  * HEAD/GET/POST/PUT/DELETE 请求
  */
 methods.forEach(function (method) {
-    exports[method] = function (url, options, callback) {
-        if (typeis(options) === 'function') {
-            callback = options;
-            options = {};
+    /**
+     * 请求
+     * @param options {String|Object}
+     * @param callback {Function}
+     */
+    exports[method] = function (options, callback) {
+        if (typeis(options) === 'string') {
+            options = {
+                url: options
+            };
         }
 
-        options.url = url;
         options.method = method;
         _request(options, callback);
     };
