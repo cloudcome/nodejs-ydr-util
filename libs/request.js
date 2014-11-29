@@ -70,7 +70,7 @@ function _request(options, callback) {
     options = dato.extend(true, {}, defaults, options);
 
     var headers = options.headers = _lowerCaseHeaders(options.headers);
-    var bodyLength = headers['content-type'];
+    var bodyLength = headers['content-length'];
 
     requestOptions.agent = options.agent;
     requestOptions.method = options.method.toUpperCase();
