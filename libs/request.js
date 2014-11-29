@@ -18,7 +18,8 @@ var defaults = {
     headers: {},
     body: null,
     file: null
-};var methods = 'head get post put delete'.split(' ');
+};
+var methods = 'head get post put delete'.split(' ');
 var Stream = require('stream');
 
 /**
@@ -57,26 +58,27 @@ methods.forEach(function (method) {
  * @private
  */
 function _request(options, callback) {
-    if(typeis(options.url) !== 'string'){
+    if (typeis(options.url) !== 'string') {
         return callback(new Error('request url must be a string'));
     }
 
     var requestOptions = url.parse(options.url);
     var _http = requestOptions.protocol === 'https:' ? https : http;
     var body = options.body || '';
-    var bodyLength = 0;
     var file = options.file || '';
-    var req;
-    var canSend;
-    var stat;
 
     options = dato.extend(true, {}, defaults, options);
-    requestOptions.headers = options.headers;
+
+    var headers = options.headers = _lowerCaseHeaders(options.headers);
+    var bodyLength = headers['content-type'];
+
     requestOptions.agent = options.agent;
     requestOptions.method = options.method.toUpperCase();
-    canSend = requestOptions.method !== 'GET' && requestOptions.method !== 'HEAD';
 
-    if (canSend) {
+    var canSend = requestOptions.method !== 'GET' && requestOptions.method !== 'HEAD';
+    var stat;
+
+    if (canSend && bodyLength === undefined) {
         if (file) {
             try {
                 stat = fs.statSync(file);
@@ -86,15 +88,23 @@ function _request(options, callback) {
 
             bodyLength = stat.size;
             body = fs.createReadStream(file);
-        }
-
-        if (!bodyLength) {
+        } else if (body instanceof Buffer) {
             bodyLength = body.length;
+        } else if (body instanceof String) {
+            bodyLength = Buffer.byteLength(body);
         }
+    } else if (!canSend) {
+        bodyLength = 0;
     }
 
-    options.headers['Content-Length'] = bodyLength;
-    req = _http.request(requestOptions, function (res) {
+    if (bodyLength !== undefined) {
+        // 当上传流文件时，length 长度可以不指定
+        options.headers['content-length'] = bodyLength;
+    }
+
+    requestOptions.headers = options.headers;
+
+    var req = _http.request(requestOptions, function (res) {
         var bufferList = [];
         var binarys = '';
         var isUtf8 = options.encoding === 'utf8';
@@ -141,6 +151,26 @@ function _request(options, callback) {
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * 小写话 headers
+ * @param headers
+ * @returns {{}}
+ * @private
+ */
+function _lowerCaseHeaders(headers) {
+    var headers2 = {};
+
+    dato.each(headers, function (key, val) {
+        headers2[String(key).trim().toLowerCase()] = String(val).trim();
+    });
+
+    return headers2;
+}
+
 
 //exports.head('http://ydr.me/favicon.ico', function (err, headers, res) {
 //    console.log(headers);
