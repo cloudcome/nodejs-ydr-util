@@ -139,7 +139,7 @@ function _request(options, callback) {
 
     if (canSend) {
         //steam
-        if (body instanceof Stream) {
+        if (body && typeis(body.pipe) === 'function') {
             body.pipe(req);
         } else {
             req.end(body);
