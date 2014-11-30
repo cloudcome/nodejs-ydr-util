@@ -118,5 +118,5 @@ function _log(err, req, res, next) {
         console.log(txt);
     }
 
-    next();
+    next(err);
 }
