@@ -80,16 +80,16 @@ function _log(err, req, res, next) {
     var query = JSON.stringify(req.query || {}, null, 4);
     var body = JSON.stringify(req.body || {}, null, 4);
     var name = date.format(options.name);
-    var suffix = err ? '-err.log' : '-out.log';
+    var suffix = err ? '-500.log' : '-404.log';
     var file = name + suffix;
     var txt =
-            '##################################################################\n' +
-            'time: ' + time + '\n' +
-            'request: ' + request + '\n' +
-            'ua: ' + req.headers['user-agent'] + '\n' +
-            'ip: ' + ip + '\n' +
-            'query: \n' + query + '\n' +
-            'body: \n' + body + '\n';
+        '##################################################################\n' +
+        'time: ' + time + '\n' +
+        'request: ' + request + '\n' +
+        'ua: ' + req.headers['user-agent'] + '\n' +
+        'ip: ' + ip + '\n' +
+        'query: \n' + query + '\n' +
+        'body: \n' + body + '\n';
 
     if (err) {
         txt +=
@@ -120,5 +120,3 @@ function _log(err, req, res, next) {
 
     next();
 }
-
-
