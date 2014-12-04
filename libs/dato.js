@@ -410,3 +410,34 @@ exports.removeComments = function (str) {
 
     return ret;
 };
+
+
+/**
+ * base64 to ascii
+ * @param base64
+ */
+exports.atob = function (ascii) {
+    try {
+        return new Buffer(encodeURIComponent(ascii), 'utf8').toString('base64');
+    } catch (err) {
+        return '';
+    }
+};
+
+/**
+ * base64 to ascii
+ * @param base64
+ */
+exports.btoa = function (base64) {
+    try {
+        return decodeURIComponent(new Buffer(base64, 'base64').toString());
+    } catch (err) {
+        // ignore
+    }
+};
+
+
+//var ascii = '云淡然2014';
+//var base64;
+//console.log(base64 = exports.atob(ascii));
+//console.log(exports.btoa(base64));
