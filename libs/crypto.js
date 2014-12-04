@@ -32,14 +32,23 @@ exports.md5 = function (data) {
 
 /**
  * 字符串 sha1 加密
- * @param data {*}
+ * @param data {*} 实体
+ * @param [secret] {*} 密钥，可选
  * @returns {*}
  */
-exports.sha1 = function (data) {
-    try {
-        return crypto.createHash('sha1').update(String(data)).digest('hex');
-    } catch (err) {
-        return err.message;
+exports.sha1 = function (data, secret) {
+    if (arguments.length === 2) {
+        try {
+            return crypto.createHmac('sha1', String(secret)).update(String(data)).digest('hex');
+        } catch (err) {
+            return '';
+        }
+    } else {
+        try {
+            return crypto.createHash('sha1').update(String(data)).digest('hex');
+        } catch (err) {
+            return err.message;
+        }
     }
 };
 
@@ -116,21 +125,34 @@ exports.decode = function (data, secret) {
 
 
 /**
- * 密码加密与验证
- * @param password {String} 20|40
+ * 密码签名与验证
+ * @param originalPassword {String} 原始密码
+ * @param [signPassword] {String} 签名后的密码： 8（密钥） + 32（密匙） = 40位
+ * @return {String|Boolean}
  */
-exports.password = function (password) {
-    var length = password.length;
-    var arr;
-    var key;
-    var cnt;
+exports.password = function (originalPassword, signPassword) {
+    var key = '';
+    var cnt = '';
+    var crypto = function (key, cnt) {
+        // 轮次 sha1
+        key = exports.sha1(key, cnt);
+        cnt = exports.sha1(cnt, key);
+        // md5 加密
+        return exports.md5(key + cnt);
+    };
 
     // 密码验证
-    if (length === 40) {
-        // abcdefg:x{32}
-        arr = password.split(':');
-        key = arr[0];
-        cnt = arr[1];
+    if (arguments.length === 2) {
+        key = signPassword.slice(0, 8);
+        cnt = signPassword.slice(8);
+
+        return crypto(key, originalPassword) === cnt;
+    }
+    // 密码签名
+    else {
+        key = random.string(8, '~@#$%^&*()_+{}[]=-<>?/,.|:;');
+
+        return key + crypto(key, originalPassword);
     }
 };
 
@@ -154,3 +176,11 @@ exports.password = function (password) {
 //console.log(e);
 //var d = exports.decode(e, k);
 //console.log(d);
+//console.log(exports.sha1(a));
+//console.log(exports.sha1(a, k));
+//var p1 = '123000000000000000000000000000000000000000000000000000';
+//var cp = exports.password(p1);
+//var p2 = exports.password(p1, cp);
+//console.log(p1);
+//console.log(cp);
+//console.log(p2);
