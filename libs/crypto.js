@@ -9,11 +9,12 @@
 var path = require('path');
 var fs = require('fs');
 var crypto = require('crypto');
+var random = require('./random.js');
 
 
 /**
  * 字符串的 MD5 计算
- * @param data {String} 待计算的数据
+ * @param data {*} 待计算的数据
  * @returns {string}
  *
  * @example
@@ -25,6 +26,20 @@ exports.md5 = function (data) {
         return crypto.createHash('md5').update(String(data)).digest('hex');
     } catch (err) {
         return '';
+    }
+};
+
+
+/**
+ * 字符串 sha1 加密
+ * @param data {*}
+ * @returns {*}
+ */
+exports.sha1 = function (data) {
+    try {
+        return crypto.createHash('sha1').update(String(data)).digest('hex');
+    } catch (err) {
+        return err.message;
     }
 };
 
@@ -97,6 +112,26 @@ exports.decode = function (data, secret) {
     var decipher = crypto.createDecipher('aes192', String(secret));
 
     return decipher.update(String(data), 'hex', 'utf8') + decipher.final('utf8');
+};
+
+
+/**
+ * 密码加密与验证
+ * @param password {String} 20|40
+ */
+exports.password = function (password) {
+    var length = password.length;
+    var arr;
+    var key;
+    var cnt;
+
+    // 密码验证
+    if (length === 40) {
+        // abcdefg:x{32}
+        arr = password.split(':');
+        key = arr[0];
+        cnt = arr[1];
+    }
 };
 
 
