@@ -9,9 +9,12 @@
 
 ## crypto
 - .md5
+- .sha1
 - .etag
+- .lastModified
 - .encode
 - .decode
+- .password
 
 
 ## date
@@ -40,6 +43,8 @@
 - .fixPath
 - .toURLPath
 - .removeComments
+- .atob
+- .btoa
 
 
 ## httpStatus
@@ -48,7 +53,7 @@
 
 
 ## log
-- log(err, req, res, next)
+- log
 - .setOptions(key, val)
 
 

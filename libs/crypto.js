@@ -178,9 +178,14 @@ exports.password = function (originalPassword, signPassword) {
 //console.log(d);
 //console.log(exports.sha1(a));
 //console.log(exports.sha1(a, k));
-//var p1 = '123000000000000000000000000000000000000000000000000000';
-//var cp = exports.password(p1);
-//var p2 = exports.password(p1, cp);
-//console.log(p1);
+var p1 = '123';
+var cp1 = exports.password(p1);
+var cp2 = exports.password(p1);
+//console.log('原始密码：', p1);
+//console.log('密码签名1：', cp1);
+//console.log('密码签名2：', cp2);
 //console.log(cp);
 //console.log(p2);
+
+console.log('系统纳秒1：', random.guid());
+console.log('系统纳秒2：', random.guid());
