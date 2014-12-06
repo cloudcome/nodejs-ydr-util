@@ -10,6 +10,8 @@ var path = require('path');
 var fs = require('fs');
 var crypto = require('crypto');
 var random = require('./random.js');
+var typeis = require('./typeis.js');
+var crypto2 = require('./crypto.js');
 
 
 /**
@@ -56,24 +58,35 @@ exports.sha1 = function (data, secret) {
 /**
  * 文件内容的 etag 计算
  * @param file {String} 文件绝对路径
- * @param callback {Function} 读取文件流进行MD5计算
+ * @param [callback] {Function} 读取文件流进行MD5计算
  * @returns {string}
  */
 exports.etag = function (file, callback) {
     var md5;
     var stream;
+    var data;
 
-    md5 = crypto.createHash('md5');
-    stream = fs.ReadStream(file);
-    stream.on('data', function (d) {
-        md5.update(d);
-    });
-    stream.on('end', function () {
-        var d = md5.digest('hex');
+    if (typeis(callback) === 'function') {
+        md5 = crypto.createHash('md5');
+        stream = fs.ReadStream(file);
+        stream.on('data', function (d) {
+            md5.update(d);
+        });
+        stream.on('end', function () {
+            var d = md5.digest('hex');
 
-        callback(null, d);
-    });
-    stream.on('error', callback);
+            callback(null, d);
+        });
+        stream.on('error', callback);
+    } else {
+        try {
+            data = fs.readFileSync(file);
+        } catch (err) {
+            data = '';
+        }
+
+        return crypto2.md5(data);
+    }
 };
 
 
@@ -178,14 +191,14 @@ exports.password = function (originalPassword, signPassword) {
 //console.log(d);
 //console.log(exports.sha1(a));
 //console.log(exports.sha1(a, k));
-var p1 = '123';
-var cp1 = exports.password(p1);
-var cp2 = exports.password(p1);
+//var p1 = '123';
+//var cp1 = exports.password(p1);
+//var cp2 = exports.password(p1);
 //console.log('原始密码：', p1);
 //console.log('密码签名1：', cp1);
 //console.log('密码签名2：', cp2);
 //console.log(cp);
 //console.log(p2);
 
-console.log('系统纳秒1：', random.guid());
-console.log('系统纳秒2：', random.guid());
+//console.log('系统纳秒1：', random.guid());
+//console.log('系统纳秒2：', random.guid());
