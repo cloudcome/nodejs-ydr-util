@@ -20,6 +20,13 @@ var regChinese = /[\u4e00-\u9fa5]/g;
 var regAPM = /[ap]m/ig;
 var weeks = '日一二三四五六';
 var monthDates = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+var REG_DAYS = /^(\d+)days?$/;
+var REG_WEEKS = /^(\d+)weeks?$/;
+var REG_MONTHS = /^(\d+)months?$/;
+var REG_YEARS = /^(\d+)years?$/;
+var REG_ENDS = /s$/;
+var REG_NUMBER = /^\d+/;
+var REG_RANGE = /^(this|in|prev|next)\s+?(?:(\d+)\s+?)?(day|week|month|year)s?$/i;
 
 
 /**
@@ -97,9 +104,7 @@ exports.format = function (format, date, config) {
     }
 
     format = format || 'YYYY-MM-DD HH:mm:ss www';
-    date = typeis(date) === 'date' ? date : new Date(date || Date.now());
-    date = this.parse(date);
-    date = date || new Date();
+    date = exports.parse(date);
     config = config || {};
 
     var Y = String(date.getFullYear());
@@ -242,28 +247,24 @@ exports.format = function (format, date, config) {
 
     return format;
 };
+
+
 /**
  * 解析时间
- * @param {String} string 时间字符串
- * @returns {Date|null}
+ * @param {String|Date} string 时间字符串
+ * @returns {Date}
  *
  * @example
  * date.parse('12/21/2014 12:21:22');
  * // => Sun Dec 21 2014 12:21:22 GMT+0800 (CST)
  */
 exports.parse = function (string) {
-    string = String(string);
+    var date = typeis(string) === 'date' ? string : new Date(string);
 
-    var date = new Date(string);
-
-    if (_parseDate(date)) {
-        return date;
-    }
-
-    string = string.replace(regSep, '/').replace(regChinese, '').replace(regAPM, '');
-
-    return _parseDate(new Date(string));
+    return typeis.validDate(date) ? new Date(date) : new Date();
 };
+
+
 /**
  * 是否为闰年
  * @param {Number} year 年份
@@ -276,6 +277,8 @@ exports.parse = function (string) {
 exports.isLeapYear = function (year) {
     return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
 };
+
+
 /**
  * 获得某年某月的天数
  * @param {Number} year 年
@@ -293,6 +296,8 @@ exports.getDaysInMonth = function (year, month, isNatualMonth) {
 
     return month === 1 ? (this.isLeapYear(year) ? 29 : 28) : monthDates[month];
 };
+
+
 /**
  * 获得某年某月某日在当年的第几天
  * @param {Number} year 年份
@@ -312,6 +317,7 @@ exports.getDaysInYear = function (year, month, date, isNatualMonth) {
 
     return days;
 };
+
 
 /**
  * 计算某年某月某日是当年的第几周
@@ -338,6 +344,8 @@ exports.getWeeksInYear = function (year, month, date, isNatualMonth) {
 
     return Math.ceil(pastDate / 7);
 };
+
+
 /**
  * 计算某年某月某日是当月的第几周
  * @param {Number} year 年
@@ -411,9 +419,9 @@ exports.getWeeksInMonth = function (year, month, date, isNatualMonth) {
  */
 exports.from = function (date, compareDate) {
     compareDate = compareDate || new Date();
-    compareDate = this.parse(compareDate);
+    compareDate = exports.parse(compareDate);
 
-    var old = this.parse(date);
+    var old = exports.parse(date);
     var oldTime;
     var diff;
     var seconds;
@@ -485,11 +493,111 @@ exports.from = function (date, compareDate) {
 
 
 /**
- * 解析为合法的日期
- * @param {Date|Object|String|Number}date
- * @returns {Date|null}
- * @private
+ * 计算日期范围
+ * @param type {String} 可选
+ * `this N days`/`this N weeks`/`this N months`/`this N years` 当日/周/月/年
+ * `in Ndays`/`in N weeks`/`in N months`/`in N years` 几日/周/月/年内
+ * @param [from] {Date} 起点时间，默认为当前时间
+ * @returns {{from: Date, to: Date}}
  */
-function _parseDate(date) {
-    return typeis.validDate(date) ? null : date;
-}
+exports.range = function (range, from) {
+    range = String(range).toLowerCase();
+
+    var temp = range.match(REG_RANGE);
+
+    if (!temp) {
+        throw new Error('date range error');
+    }
+
+    var type = temp[1];
+    var value = dato.parseInt(temp[2] || 1);
+    var scope = temp[3];
+    var oneDayMilliseconds = 1 * 24 * 60 * 60 * 1000;
+
+    from = exports.parse(from);
+
+    var thisYear = from.getFullYear();
+    var thisMonth = from.getMonth();
+    var thisDate = from.getDate();
+    var thisDay = from.getDay();
+
+    // 今日 00:00:00:000
+    from.setHours(0);
+    from.setMinutes(0);
+    from.setSeconds(0);
+    from.setMilliseconds(0);
+    // 昨日 23:59:59:999
+    var to = new Date(from.getTime() - 1);
+
+    switch (type) {
+        case 'this':
+
+            switch (scope) {
+                case 'day':
+                    to.setDate(thisDate + value - 1);
+                    break;
+
+                case 'week':
+                    from.setDate(thisDate + (1 - thisDay) + (value - 1) * 7);
+                    to.setDate(thisDate + (7 - thisDay) + (value - 1) * 7);
+                    break;
+
+                case 'month':
+
+                    from.setDate(1);
+                    to.setMonth(thisMonth + value, 1);
+                    to = new Date(to.getTime() - oneDayMilliseconds);
+                    break;
+
+                case 'year':
+                    from.setMonth(0);
+                    from.setDate(1);
+                    to.setFullYear(thisYear + value - 1);
+                    to.setMonth(12, 1);
+                    to = new Date(to.getTime() - oneDayMilliseconds);
+                    break;
+            }
+            break;
+
+        case 'in':
+            switch (scope) {
+                case 'day':
+                    to.setDate(thisDate + value - 1);
+                    break;
+
+                case 'week':
+                    to.setDate(thisDate + (7 - thisDay) + (value - 1) * 7);
+                    break;
+
+                case 'month':
+                    to.setMonth(thisMonth + value, 1);
+                    to = new Date(to.getTime() - oneDayMilliseconds);
+                    break;
+
+                case 'year':
+                    to.setFullYear(thisYear + value, thisMonth, thisDate);
+                    to = new Date(to.getTime() - oneDayMilliseconds);
+                    break;
+            }
+            break;
+    }
+
+    return {
+        from: from,
+        to: to
+    };
+};
+
+
+//////////////////////////////////////////////////////////////////////////
+/////////////////////////// [ private ] //////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
+//var dd = exports.range('this 3 day');
+//var dd = exports.range('this 3 week');
+//var dd = exports.range('this 3 month');
+//var dd = exports.range('this 3 year');
+//var dd = exports.range('in 3 days');
+//var dd = exports.range('in 3 weeks');
+//var dd = exports.range('in 3 months');
+//var dd = exports.range('in 3 years');
