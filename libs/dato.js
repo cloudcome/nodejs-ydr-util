@@ -16,6 +16,7 @@ var REG_STRING_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
 var REG_PATH = path.sep === '/' ? /\\/ : /\//g;
 var REG_URL = /\\/g;
 var REG_NOT_UTF16_SINGLE = /[^\x00-\xff]{2}/g;
+var REG_HUMAN_NUMBER = /(\d)(?=(\d{3})+$)/g;
 
 
 /**
@@ -437,7 +438,24 @@ exports.btoa = function (base64) {
 };
 
 
+/**
+ * 人类数字，千位分割
+ * @param number {String|Number} 数字（字符串）
+ * @param [separator=","] {String} 分隔符
+ * @returns {string} 分割后的字符串
+ */
+exports.humanNumber = function (number, separator) {
+    separator = separator || ',';
+
+    var arr = String(number).split('.');
+    var p1 = arr[0].replace(REG_HUMAN_NUMBER, '$1' + separator);
+
+    return p1 + (arr[1] ? '.' + arr[1] : '');
+};
+
+
 //var ascii = '云淡然2014';
 //var base64;
 //console.log(base64 = exports.atob(ascii));
 //console.log(exports.btoa(base64));
+//console.log(exports.humanNumber('31231231231210.003112'));
