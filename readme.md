@@ -26,7 +26,7 @@
 - .getWeeksInYear
 - .getWeeksInMonth
 - .from
-- .from
+- .range
 
 
 ## dato
