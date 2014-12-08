@@ -45,6 +45,7 @@
 - .removeComments
 - .atob
 - .btoa
+- .humanNumber
 
 
 ## httpStatus
