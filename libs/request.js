@@ -45,6 +45,24 @@ methods.forEach(function (method) {
 
 
 /**
+ * 下载资源
+ * @param options {String|Object}
+ * @param callback {Function}
+ */
+exports.down = function (options, callback) {
+    if (typeis(options) === 'string') {
+        options = {
+            url: options
+        };
+    }
+
+    options.method = 'get';
+    options.encoding = 'binary';
+    _request(options, callback);
+};
+
+
+/**
  * 远程请求
  * @param options
  * @param options.url {String} 请求地址
@@ -187,4 +205,16 @@ function _lowerCaseHeaders(headers) {
 //}, function (e, binary, res) {
 //    var file = path.join(__dirname, '../test/ydr.me.ico');
 //    fs.writeFileSync(file, binary, 'binary');
+//});
+
+//var path = require('path');
+//var file = path.join(__dirname, '../test/test.ico');
+//exports.down('http://ydr.me/favicon.ico', function (err, binary, res) {
+//    if (err) {
+//        return console.error(err);
+//    }
+//
+//    fs.writeFile(file, binary, 'binary', function () {
+//        console.log(arguments);
+//    });
 //});
