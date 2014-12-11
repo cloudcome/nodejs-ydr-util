@@ -70,9 +70,12 @@
 
 
 ## request
-- head(url, [options], callback)
-- get(url, [options], callback)
-- post(url, [options], callback)
+- .head(options, callback)
+- .get(options, callback)
+- .post(options, callback)
+- .put(options, callback)
+- .delete(options, callback)
+- .down(options, callback)
 
 
 ## typeis
