@@ -26,6 +26,8 @@ var log = function () {
         _log(err, req, res, next);
     };
 
+    process.on('uncaughtException', _log);
+
     return [fn1, fn2];
 };
 
@@ -75,21 +77,21 @@ module.exports = log;
  */
 function _log(err, req, res, next) {
     var time = date.format('YYYY年MM月DD日 HH:mm:ss.SSS 星期e a');
-    var request = req.method + ' ' + (err ? '500' : '404') + ' ' + req.url;
-    var ip = req.ip || req.headers['x-forwarded-for'] || '0.0.0.0';
-    var query = JSON.stringify(req.query || {}, null, 4);
-    var body = JSON.stringify(req.body || {}, null, 4);
+    var request = req ? req.method + ' ' + (err ? '500' : '404') + ' ' + req.url : '';
+    var ip = req ? req.ip || req.headers['x-forwarded-for'] || '0.0.0.0' : '';
+    var query = req ? JSON.stringify(req.query || {}, null, 4) : '';
+    var body = req ? JSON.stringify(req.body || {}, null, 4) : '';
     var name = date.format(options.name);
     var suffix = err ? '-500.log' : '-404.log';
     var file = name + suffix;
     var txt =
-        '##################################################################\n' +
-        'time: ' + time + '\n' +
-        'request: ' + request + '\n' +
-        'ua: ' + req.headers['user-agent'] + '\n' +
-        'ip: ' + ip + '\n' +
-        'query: \n' + query + '\n' +
-        'body: \n' + body + '\n';
+            '##################################################################\n' +
+            'time: ' + time + '\n' +
+            (request ? 'request: ' + request + '\n' : '') +
+            (req ? 'ua: ' + req.headers['user-agent'] + '\n' : '') +
+            (req ? 'ip: ' + ip + '\n' : '') +
+            (req ? 'query: \n' + query + '\n' : '') +
+            (req ? 'body: \n' + body + '\n' : '');
 
     if (err) {
         txt +=
@@ -114,9 +116,13 @@ function _log(err, req, res, next) {
                 });
             }
         });
-    } else {
+    }
+    // 开发环境
+    else {
         console.log(txt);
     }
 
-    next(err);
+    if (err) {
+        next(err);
+    }
 }
