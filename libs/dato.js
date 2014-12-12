@@ -142,6 +142,30 @@ exports.extend = function (isExtendDeep, source, target) {
 
 
 /**
+ * 萃取
+ * @param data {Object} 传递的数据
+ * @param keys {Array} 摘取的键数组
+ * @param [filter] {Function} 过滤方法，默认取不为 undefined 键值
+ * @returns {Object}
+ */
+exports.pick = function (data, keys, filter) {
+    var data2 = {};
+    
+    filter = filter || function (val) {
+        return val !== undefined;
+    };
+
+    keys.forEach(function (key) {
+        if (filter(data[key])) {
+            data2[key] = data[key];
+        }
+    });
+
+    return data2;
+};
+
+
+/**
  * 转换对象为一个纯数组，只要对象有length属性即可
  * @param {Object} [data] 对象
  * @param {Boolean} [isConvertWhole] 是否转换整个对象为数组中的第0个元素，当该对象无length属性时，默认false
