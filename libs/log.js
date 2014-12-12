@@ -122,7 +122,7 @@ function _log(err, req, res, next) {
         console.log(txt);
     }
 
-    if (err) {
+    if (next) {
         next(err);
     }
 }
