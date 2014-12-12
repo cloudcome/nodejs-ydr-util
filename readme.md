@@ -3,70 +3,71 @@
 # APIS
 
 ## class
-- .create
-- .inherit
+- .create({constructor:,STATIC:,...})
+- .inherit(constructor, superConstructor, isCopyStatic)
 
 
 ## crypto
-- .md5
-- .sha1
-- .etag
-- .lastModified
-- .encode
-- .decode
-- .password
+- .md5(data)
+- .sha1(data, [secret])
+- .etag(file, [callback])
+- .lastModified(file)
+- .encode(data, secret)
+- .decode(data, secret)
+- .password(originalPassword, [signPassword])
 
 
 ## date
-- .format
-- .parse
-- .isLeapYear
-- .getDaysInMonth
-- .getDaysInYear
-- .getWeeksInYear
-- .getWeeksInMonth
-- .from
-- .range
+- .format(format, [date], [config])
+- .parse(string)
+- .isLeapYear(year)
+- .getDaysInMonth(year, month, [isNatualMonth])
+- .getDaysInYear(year, month, date, [isNatualMonth])
+- .getWeeksInYear(year, month, date, [isNatualMonth])
+- .getWeeksInMonth(year, month, date, [isNatualMonth])
+- .from(date, [compareDate])
+- .range(range, [from])
 
 
 ## dato
-- .parseInt
-- .parseFloat
-- .each
-- .extend
-- .toArray
-- .compare
-- .fixRegExp
-- .bytes
-- .length
-- .fillNumber
-- .fixPath
-- .toURLPath
-- .removeComments
-- .atob
-- .btoa
-- .humanNumber
+- .parseInt(obj, [dft])
+- .parseFloat(obj, dft)
+- .each(list, callback, [context])
+- .extend(isExtendDeep, source, target)
+- .toArray(obj, [isConvertWhole])
+- .compare(obj1, obj2)
+- .fixRegExp(regExpString)
+- .bytes(string, doubleLength)
+- .length(string)
+- .fillNumber(number, length)
+- .fixPath(p)
+- .toURLPath(p)
+- .removeComments(str)
+- .atob(ascii)
+- .btoa(base64)
+- .humanNumber(number, [separator], [length])
+- .than(long1, long2, [separator])
 
 
 ## httpStatus
-- .get
-- .set
+- .get(statusCode, [defaultStatus])
+- .set(statusCode, status)
 
 
 ## log
-- log
+- log()
 - .setOptions(key, val)
 
 
 ## mime
-- .get
-- .set
+- .get(extname, [defaultContentType])
+- .set(extname, contentType)
 
 
 ## random
 - .number(length)
 - .string(length, dictionary)
-- .guid()
+- .guid()// => 26位
 
 
 ## request
@@ -80,17 +81,17 @@
 
 ## typeis
 - typeis()
-- .plainObject
-- .emptyObject
-- .url
-- .email
-- .validDate
-- .mongoId
-- .emptyData
-- .directory
-- .file
+- .plainObject()
+- .emptyObject()
+- .url()
+- .email()
+- .validDate()
+- .mongoId()
+- .emptyData()
+- .directory()
+- .file()
 
 
 ## xss
-- mdSafe
-- mdRender
+- mdSafe(source, [moreDangerTagNameList])
+- mdRender(source, [filterOptions])
