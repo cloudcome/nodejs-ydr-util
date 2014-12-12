@@ -494,16 +494,6 @@ exports.than = function (long1, long2, operator) {
         return operator === '<';
     }
 
-    // 3. 比较第一位长度
-    var long10 = long1List[0];
-    var long20 = long2List[0];
-
-    if (long10.length > long20.length) {
-        return operator === '>';
-    } else if (long10.length < long20.length) {
-        return operator === '<';
-    }
-
     // 3. 遍历比较
     var ret = false;
 
