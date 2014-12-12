@@ -99,6 +99,7 @@ exports.string = function (length, dictionary) {
  * 精确正整数在 -2^53 - 2^53 之间，即 −9007199254740992 - 9007199254740992（长度16）
  * 因此为了精确比较，需要控制数据在16位以内，即长度小于16
  * 所以，此处的比较，需要将字符串分成2部分，分别是13位 + 13位
+ * 比较两个字符串数值大小使用 dato.than(long1, long2, '>');
  * @returns {String}
  */
 exports.guid = function () {
