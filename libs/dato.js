@@ -16,7 +16,7 @@ var REG_STRING_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
 var REG_PATH = path.sep === '/' ? /\\/ : /\//g;
 var REG_URL = /\\/g;
 var REG_NOT_UTF16_SINGLE = /[^\x00-\xff]{2}/g;
-var REG_HUMAN_NUMBER = /(\d)(?=(\d{3})+$)/g;
+var REG_BEGIN_0 = /^0+/;
 
 
 /**
@@ -433,7 +433,7 @@ exports.btoa = function (base64) {
     try {
         return decodeURIComponent(new Buffer(base64, 'base64').toString());
     } catch (err) {
-        // ignore
+        return '';
     }
 };
 
@@ -442,20 +442,94 @@ exports.btoa = function (base64) {
  * 人类数字，千位分割
  * @param number {String|Number} 数字（字符串）
  * @param [separator=","] {String} 分隔符
+ * @param [length=3] {Number} 分隔长度
  * @returns {string} 分割后的字符串
  */
-exports.humanNumber = function (number, separator) {
+exports.humanNumber = function (number, separator, length) {
     separator = separator || ',';
+    length = length || 3;
 
+    var reg = new RegExp('(\\d)(?=(\\d{' + length + '})+$)', 'g');
     var arr = String(number).split('.');
-    var p1 = arr[0].replace(REG_HUMAN_NUMBER, '$1' + separator);
+    var p1 = arr[0].replace(reg, '$1' + separator);
 
     return p1 + (arr[1] ? '.' + arr[1] : '');
 };
 
+
+/**
+ * 比较两个长整型数值
+ * @param long1 {String} 长整型数值字符串1
+ * @param long2 {String} 长整型数值字符串2
+ * @param [operator=">"] {String} 比较操作符，默认比较 long1 > long2
+ * @returns {*}
+ */
+exports.than = function (long1, long2, operator) {
+    operator = operator || '>';
+    long1 = String(long1).replace(REG_BEGIN_0, '');
+    long2 = String(long2).replace(REG_BEGIN_0, '');
+
+    // 1. 比较长度
+    if (long1.length > long2.length) {
+        return operator === '>';
+    } else if (long1.length < long2.length) {
+        return operator === '<';
+    }
+
+    var long1List = exports.humanNumber(long1, ',', 15).split(',');
+    var long2List = exports.humanNumber(long2, ',', 15).split(',');
+
+    //[
+    // '123456',
+    // '789012345678901',
+    // '234567890123456',
+    // '789012345678901',
+    // '234567890123457'
+    // ]
+
+    // 2. 比较数组长度
+    if (long1List.length > long2List.length) {
+        return operator === '>';
+    } else if (long1List.length < long2List.length) {
+        return operator === '<';
+    }
+
+    // 3. 比较第一位长度
+    var long10 = long1List[0];
+    var long20 = long2List[0];
+
+    if (long10.length > long20.length) {
+        return operator === '>';
+    } else if (long10.length < long20.length) {
+        return operator === '<';
+    }
+
+    // 3. 遍历比较
+    var ret = false;
+
+    exports.each(long1List, function (index, number1) {
+        var number2 = long2List[index];
+
+        if (number1 > number2) {
+            ret = operator === '>';
+            return false;
+        } else if (number1 < number2) {
+            ret = operator === '<';
+            return false;
+        }
+    });
+
+    return ret;
+};
 
 //var ascii = '云淡然2014';
 //var base64;
 //console.log(base64 = exports.atob(ascii));
 //console.log(exports.btoa(base64));
 //console.log(exports.humanNumber('31231231231210.003112'));
+
+//var long1 = '12345678901234567890';
+//var long2 = '5';
+//
+//var ret = exports.than(long1, long2);
+//console.log(ret);
