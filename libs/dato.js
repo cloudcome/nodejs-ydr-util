@@ -471,7 +471,7 @@ exports.btoa = function (base64) {
  * @param [length=3] {Number} 分隔长度
  * @returns {string} 分割后的字符串
  */
-exports.humanNumber = function (number, separator, length) {
+exports.humanize = function (number, separator, length) {
     separator = separator || ',';
     length = length || 3;
 
@@ -598,7 +598,7 @@ exports.gravatar = function (email, options) {
 //var base64;
 //console.log(base64 = exports.atob(ascii));
 //console.log(exports.btoa(base64));
-//console.log(exports.humanNumber('31231231231210.003112'));
+//console.log(exports.humanize('31231231231210.003112'));
 
 //var long1 = '12345678901234567890';
 //var long2 = '5';
