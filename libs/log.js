@@ -55,7 +55,9 @@ log.setOptions = function (key, val) {
  * 接收错误
  * @param err {Object} 错误对象
  */
-log.holdError = _log;
+log.holdError = function (err) {
+    _log(err);
+};
 
 
 /**
