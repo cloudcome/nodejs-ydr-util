@@ -19,8 +19,9 @@ var options = {
     // YYYY年MM月DD日 HH:mm:ss.SSS 星期e a
     name: './YYYY/MM/YYYY-MM-DD',
     // 邮件发送服务器
+    smtp: null,
     email: {
-        sender: null,
+        smtp: null,
         from: '服务器错误',
         to: 'cloudcome@qq.com',
         subject: '服务器错误'
@@ -46,15 +47,7 @@ var log = function () {
  * @param val {*} 配置值
  */
 log.setOptions = function (key, val) {
-    var map = {};
-
-    if (arguments.length === 2) {
-        map[key] = val;
-    } else {
-        map = key;
-    }
-
-    dato.extend(true, options, map);
+    options[key] = val;
 };
 
 
@@ -138,15 +131,17 @@ function _log(err, req, res, next) {
         console.log(txt);
     }
 
-    if (options.email && typeis(options.email.sender) === 'function') {
-        options.email.sender({
+    if (options.smtp && options.smtp.send && typeis(options.smtp.send) === 'function') {
+        options.smtp.send({
             from: options.email.from,
             to: options.email.to,
-            subject: options.email.subject,
+            subject: options.email.subject + ' ' + time,
             attachment: [{
-                data: txt,
+                data: '<pre>' + txt + '</pre>',
                 alternative: true
             }]
+        }, function () {
+            // ignore
         });
     }
 
