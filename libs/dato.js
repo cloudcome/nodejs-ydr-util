@@ -572,7 +572,7 @@ exports.gravatar = function (email, options) {
     if (options.forcedefault) {
         options.forcedefault = 'y';
     } else {
-        options.forcedefault = 'n';
+        options.forcedefault = false;
     }
 
     var query = {
