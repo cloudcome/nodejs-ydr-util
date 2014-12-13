@@ -8,6 +8,7 @@
 
 var dato = require('./dato.js');
 var date = require('./date.js');
+var typeis = require('./typeis.js');
 var fs = require('fs-extra');
 var path = require('path');
 var options = {
@@ -16,7 +17,14 @@ var options = {
     // 存放路径
     path: null,
     // YYYY年MM月DD日 HH:mm:ss.SSS 星期e a
-    name: './YYYY/MM/YYYY-MM-DD'
+    name: './YYYY/MM/YYYY-MM-DD',
+    // 邮件发送服务器
+    email: {
+        sender: null,
+        from: '服务器错误',
+        to: 'cloudcome@qq.com',
+        subject: '服务器错误'
+    }
 };
 var log = function () {
     var fn1 = function (req, res, next) {
@@ -34,8 +42,8 @@ var log = function () {
 
 /**
  * 设置配置
- * @param key
- * @param val
+ * @param key {String} 配置键
+ * @param val {*} 配置值
  */
 log.setOptions = function (key, val) {
     var map = {};
@@ -48,6 +56,14 @@ log.setOptions = function (key, val) {
 
     dato.extend(true, options, map);
 };
+
+
+/**
+ * 接收错误
+ * @param err {Object} 错误对象
+ */
+log.holdError = _log;
+
 
 /**
  * 日志记录
@@ -85,13 +101,13 @@ function _log(err, req, res, next) {
     var suffix = err ? '-500.log' : '-404.log';
     var file = name + suffix;
     var txt =
-            '##################################################################\n' +
-            'time: ' + time + '\n' +
-            (request ? 'request: ' + request + '\n' : '') +
-            (req ? 'ua: ' + req.headers['user-agent'] + '\n' : '') +
-            (req ? 'ip: ' + ip + '\n' : '') +
-            (req ? 'query: \n' + query + '\n' : '') +
-            (req ? 'body: \n' + body + '\n' : '');
+        '##################################################################\n' +
+        'time: ' + time + '\n' +
+        (request ? 'request: ' + request + '\n' : '') +
+        (req ? 'ua: ' + req.headers['user-agent'] + '\n' : '') +
+        (req ? 'ip: ' + ip + '\n' : '') +
+        (req ? 'query: \n' + query + '\n' : '') +
+        (req ? 'body: \n' + body + '\n' : '');
 
     if (err) {
         txt +=
@@ -122,7 +138,19 @@ function _log(err, req, res, next) {
         console.log(txt);
     }
 
-    if (next) {
+    if (options.email && typeis(options.email.sender) === 'function') {
+        options.email.sender({
+            from: options.email.from,
+            to: options.email.to,
+            subject: options.email.subject,
+            attachment: [{
+                data: txt,
+                alternative: true
+            }]
+        });
+    }
+
+    if (typeis(next) === 'function') {
         next(err);
     }
 }
