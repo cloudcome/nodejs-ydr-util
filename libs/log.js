@@ -114,19 +114,16 @@ function _log(err, req, res, next) {
 
     // 生产环境
     if (options.env.indexOf('pro') > -1) {
-        if (!options.path) {
-            console.error('please set ydr-util.log options about path');
-            process.exit(-1);
+        if (options.path) {
+            file = path.join(options.path, file);
+            fs.createFile(file, function (e) {
+                if (!e) {
+                    fs.appendFile(file, txt + '\n', function () {
+                        // ignore
+                    });
+                }
+            });
         }
-
-        file = path.join(options.path, file);
-        fs.createFile(file, function (e) {
-            if (!e) {
-                fs.appendFile(file, txt + '\n', function () {
-                    // ignore
-                });
-            }
-        });
     }
     // 开发环境
     else {
