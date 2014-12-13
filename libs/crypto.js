@@ -119,8 +119,15 @@ exports.lastModified = function (file) {
  */
 exports.encode = function (data, secret) {
     var cipher = crypto.createCipher('aes192', String(secret));
+    var ret;
 
-    return cipher.update(String(data), 'utf8', 'hex') + cipher.final('hex');
+    try {
+        ret = cipher.update(String(data), 'utf8', 'hex');
+    } catch (err) {
+        return '';
+    }
+
+    return ret + cipher.final('hex');
 };
 
 
@@ -132,8 +139,15 @@ exports.encode = function (data, secret) {
  */
 exports.decode = function (data, secret) {
     var decipher = crypto.createDecipher('aes192', String(secret));
+    var ret;
 
-    return decipher.update(String(data), 'hex', 'utf8') + decipher.final('utf8');
+    try {
+        ret = decipher.update(String(data), 'hex', 'utf8');
+    } catch (err) {
+        return '';
+    }
+
+    return ret + decipher.final('utf8');
 };
 
 
