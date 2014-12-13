@@ -48,6 +48,7 @@
 - .btoa(base64)
 - .humanNumber(number, [separator], [length])
 - .than(long1, long2, [separator])
+- .gravatar(email, [options])
 
 
 ## httpStatus

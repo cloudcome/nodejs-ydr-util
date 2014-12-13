@@ -7,9 +7,11 @@
 
 'use strict';
 
-var fs = require('fs');
+var qs = require('querystring');
 var path = require('path');
 var typeis = require('./typeis.js');
+var crypto = require('./crypto.js');
+var request = require('./request.js');
 var udf;
 var canListTypeArr = 'array object nodelist htmlcollection'.split(' ');
 var REG_STRING_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
@@ -150,7 +152,7 @@ exports.extend = function (isExtendDeep, source, target) {
  */
 exports.pick = function (data, keys, filter) {
     var data2 = {};
-    
+
     filter = filter || function (val) {
         return val !== undefined;
     };
@@ -536,6 +538,62 @@ exports.than = function (long1, long2, operator) {
     return ret;
 };
 
+
+/**
+ * 获取 gravatar
+ * @param email {String} 邮箱
+ * @param [options] {Object} 配置
+ * @param [options.host="http://gravatar.duoshuo.com/avatar/"] {String} 服务器
+ * @param [options.size=100] {Number} 尺寸
+ * @param [options.default="mm"] {Number} 默认头像
+ * @param [options.forcedefault=false] {*} 是否忽略默认头像
+ * @param [options.rating] {*} 评级
+ * @returns {string}
+ */
+exports.gravatar = function (email, options) {
+    options = options || {};
+    email = email.toLowerCase();
+
+    if (!options.host) {
+        options.host = 'http://gravatar.duoshuo.com/avatar/';
+    }
+
+    options.host += crypto.md5(email) + '?';
+
+    if (!options.size) {
+        options.size = 100;
+    }
+
+    if (!options.default) {
+        //options.default = 'http://s.ydr.me/p/i/avatar.png';
+        options.default = 'mm';
+    }
+
+    if (options.forcedefault) {
+        options.forcedefault = 'y';
+    } else {
+        options.forcedefault = 'n';
+    }
+
+    var query = {
+        s: options.size
+    };
+
+    if(options.default){
+        query.d = options.default;
+    }
+
+    if(options.forcedefault){
+        query.f = options.forcedefault;
+    }
+
+    if(options.rating){
+        query.r = options.rating;
+    }
+
+    return options.host + qs.stringify(query);
+};
+
 //var ascii = '云淡然2014';
 //var base64;
 //console.log(base64 = exports.atob(ascii));
@@ -547,3 +605,5 @@ exports.than = function (long1, long2, operator) {
 //
 //var ret = exports.than(long1, long2);
 //console.log(ret);
+
+//console.log(exports.gravatar('1@1.com'));
