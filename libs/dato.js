@@ -153,6 +153,8 @@ exports.extend = function (isExtendDeep, source, target) {
 exports.pick = function (data, keys, filter) {
     var data2 = {};
 
+    data = data || {};
+
     filter = filter || function (val) {
         return val !== undefined;
     };
