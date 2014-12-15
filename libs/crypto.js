@@ -121,7 +121,7 @@ exports.encode = function (data, secret) {
     var cipher = crypto.createCipher('aes192', String(secret));
 
     try {
-        return cipher.update(String(data), 'utf8', 'hex')+ cipher.final('hex');
+        return cipher.update(String(data), 'utf8', 'hex') + cipher.final('hex');
     } catch (err) {
         return '';
     }
@@ -136,10 +136,9 @@ exports.encode = function (data, secret) {
  */
 exports.decode = function (data, secret) {
     var decipher = crypto.createDecipher('aes192', String(secret));
-    var ret;
 
     try {
-        return decipher.update(String(data), 'hex', 'utf8')decipher.final('utf8');
+        return decipher.update(String(data), 'hex', 'utf8') + decipher.final('utf8');
     } catch (err) {
         return '';
     }
