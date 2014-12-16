@@ -17,8 +17,6 @@ module.exports = {
     dato: require('./libs/dato.js'),
     // HTTP status
     httpStatus: require('./libs/httpStatus.js'),
-    // log
-    log: require('./libs/log.js'),
     // MIME
     mime: require('./libs/mime.js'),
     // 随机数
