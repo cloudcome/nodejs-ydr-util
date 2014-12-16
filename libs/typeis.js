@@ -13,6 +13,7 @@ var udf = 'undefined';
 var REG_URL = /^https?:\/\/(\w+\.)+[a-z]{2,5}(\/|\/[\w#!:.?+=&%@!\-\/]+)?$/i;
 var REG_EMAIL = /^\w+[-+.\w]*@([\w-]+\.)+[a-z]{2,5}$/i;
 var REG_MOMGODB_ID = /^[\da-z]{24}$/;
+var REG_INVALID = /invalid/i;
 var fs = require('fs');
 
 
@@ -200,7 +201,7 @@ typeis.email = function (string) {
  * 2014年5月2日21:07:33
  */
 typeis.validDate = function (anything) {
-    return !/invalid/i.test(new Date(anything).toString());
+    return !REG_INVALID.test(new Date(anything).toString());
 };
 
 

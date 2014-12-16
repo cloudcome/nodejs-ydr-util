@@ -14,18 +14,8 @@
 
 var dato = require('./dato.js');
 var typeis = require('./typeis.js');
-var regInvalid = /invalid/i;
-var regSep = /-/g;
-var regChinese = /[\u4e00-\u9fa5]/g;
-var regAPM = /[ap]m/ig;
 var weeks = '日一二三四五六';
 var monthDates = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-var REG_DAYS = /^(\d+)days?$/;
-var REG_WEEKS = /^(\d+)weeks?$/;
-var REG_MONTHS = /^(\d+)months?$/;
-var REG_YEARS = /^(\d+)years?$/;
-var REG_ENDS = /s$/;
-var REG_NUMBER = /^\d+/;
 var REG_RANGE = /^(this|in|prev|next)\s+?(?:(\d+)\s+?)?(day|week|month|year)s?$/i;
 
 
