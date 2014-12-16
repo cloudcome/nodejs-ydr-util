@@ -68,7 +68,7 @@
 
 
 ## request
-- .head(options, callback)
+- .head(options, callback
 - .get(options, callback)
 - .post(options, callback)
 - .put(options, callback)
