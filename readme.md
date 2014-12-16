@@ -56,11 +56,6 @@
 - .set(statusCode, status)
 
 
-## log
-- log()
-- .setOptions(key, val)
-
-
 ## mime
 - .get(extname, [defaultContentType])
 - .set(extname, contentType)
