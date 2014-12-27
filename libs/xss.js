@@ -153,7 +153,7 @@ function _buildLink(href, title, text, isBlank) {
     return '<a href="' + href + '"' +
         (isBlank ? ' target="_blank"' : '') +
         (title ? ' ' + title : '') +
-        '>' + text + '</a>';
+        '>' + (text || '[链接]') + '</a>';
 }
 
 

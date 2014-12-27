@@ -10,7 +10,7 @@
 
 var fs = require('fs');
 var udf = 'undefined';
-var REG_URL = /^https?:\/\/(\w+\.)+[a-z]{2,5}(\/|\/[\w#!:.?+=&%@!\-\/]+)?$/i;
+var REG_URL = /^https?:\/\/([\w-]+\.)+[a-z]{2,5}(:\d{1,})?(\/|\/[\w#!:.?+=&%@!\-\/]+)?$/i;
 var REG_EMAIL = /^\w+[-+.\w]*@([\w-]+\.)+[a-z]{2,5}$/i;
 var REG_MOMGODB_ID = /^[\da-z]{24}$/;
 var REG_INVALID = /invalid/i;
