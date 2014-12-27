@@ -14,6 +14,8 @@ var REG_DOUBLE = /^\/\//;
 var REG_POINT = /\./g;
 var REG_LT = /</g;
 var REG_GT = />/g;
+// 空白
+var REG_SPACE = /[\x00-\x20\x7F-\xA0\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF\t\v]{1,}/g;
 var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
 // 自动关闭标签是安全的，如 br、hr、img 等
 var REG_CLOSE_TAGNAME = /(?!```)<([a-z\d]+)\b[\s\S]*?>([\s\S]*?)<\/\1>(?!```)/ig;
@@ -61,15 +63,18 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
 
     // 过滤不安全 HTML 标签
     list = list.map(function (item) {
-        return item.replace(REG_CLOSE_TAGNAME, function ($0, $1) {
-            $1 = $1.toLowerCase();
+        return item
+            .replace(REG_CLOSE_TAGNAME, function ($0, $1) {
+                $1 = $1.toLowerCase();
 
-            if (dangerTagNameList.indexOf($1) > -1 || moreDangerTagNameList.indexOf($1) > -1) {
-                return '';
-            } else {
-                return $0.replace(REG_LT, '&lt;').replace(REG_GT, '&gt;');
-            }
-        }).replace(REG_LONG_BREAK_LINE, '\n\n');
+                if (dangerTagNameList.indexOf($1) > -1 || moreDangerTagNameList.indexOf($1) > -1) {
+                    return '';
+                } else {
+                    return $0.replace(REG_LT, '&lt;').replace(REG_GT, '&gt;');
+                }
+            })
+            .replace(REG_LONG_BREAK_LINE, '\n\n\n')
+            .replace(REG_SPACE, ' ');
     });
 
     list.forEach(function (item, j) {
