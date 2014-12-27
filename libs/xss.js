@@ -73,8 +73,7 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
                     return $0.replace(REG_LT, '&lt;').replace(REG_GT, '&gt;');
                 }
             })
-            .replace(REG_LONG_BREAK_LINE, '\n\n\n')
-            .replace(REG_SPACE, ' ');
+            .replace(REG_LONG_BREAK_LINE, '\n\n\n');
     });
 
     list.forEach(function (item, j) {
