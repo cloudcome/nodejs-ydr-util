@@ -150,10 +150,11 @@ exports.mdRender = function (source, filterOptions) {
  * @private
  */
 function _buildLink(href, title, text, isBlank) {
+    text = text.trim();
     return '<a href="' + href + '"' +
         (isBlank ? ' target="_blank"' : '') +
         (title ? ' ' + title : '') +
-        '>' + (text || '[链接]') + '</a>';
+        '>' + (text || href) + '</a>';
 }
 
 
