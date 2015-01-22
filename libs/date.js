@@ -16,7 +16,7 @@ var dato = require('./dato.js');
 var typeis = require('./typeis.js');
 var weeks = '日一二三四五六';
 var monthDates = [31, 0, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-var REG_RANGE = /^(this|in|prev|next)\s+?(?:(\d+)\s+?)?(day|week|month|year)s?$/i;
+var REG_RANGE = /^(this|in)\s+?(?:(\d+)\s+?)?(day|week|month|year)s?$/i;
 
 
 /**
@@ -242,16 +242,32 @@ exports.format = function (format, date, config) {
 /**
  * 解析时间
  * @param {String|Date} string 时间字符串
+ * @param {Date} [dftDate] 如果前置时间不合法，默认时间，默认为现在
  * @returns {Date}
  *
  * @example
  * date.parse('12/21/2014 12:21:22');
  * // => Sun Dec 21 2014 12:21:22 GMT+0800 (CST)
  */
-exports.parse = function (string) {
-    var date = typeis(string) === 'date' ? string : new Date(string);
+exports.parse = function (string, dftDate) {
+    var date;
 
-    return typeis.validDate(date) ? new Date(date) : new Date();
+    dftDate = dftDate || new Date();
+
+    switch (typeis(string)) {
+        case 'string':
+        case 'number':
+            date = string;
+            break;
+
+        case 'date':
+            return string;
+
+        default :
+            return dftDate;
+    }
+
+    return typeis.validDate(date) ? new Date(date) : dftDate;
 };
 
 
@@ -283,6 +299,7 @@ exports.isLeapYear = function (year) {
  */
 exports.getDaysInMonth = function (year, month, isNatualMonth) {
     month = isNatualMonth ? month - 1 : month;
+    month = new Date(year, month).getMonth();
 
     return month === 1 ? (exports.isLeapYear(year) ? 29 : 28) : monthDates[month];
 };
@@ -592,17 +609,3 @@ exports.range = function (range, ref) {
         to: to
     };
 };
-
-
-//////////////////////////////////////////////////////////////////////////
-/////////////////////////// [ private ] //////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-//var dd = exports.range('this 3 day');
-//var dd = exports.range('this 3 week');
-//var dd = exports.range('this 3 month');
-//var dd = exports.range('this 3 year');
-//var dd = exports.range('in 3 days');
-//var dd = exports.range('in 3 weeks');
-//var dd = exports.range('in 3 months');
-//var dd = exports.range('in 3 years');
