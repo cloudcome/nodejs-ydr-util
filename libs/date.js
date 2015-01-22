@@ -284,7 +284,7 @@ exports.isLeapYear = function (year) {
 exports.getDaysInMonth = function (year, month, isNatualMonth) {
     month = isNatualMonth ? month - 1 : month;
 
-    return month === 1 ? (this.isLeapYear(year) ? 29 : 28) : monthDates[month];
+    return month === 1 ? (exports.isLeapYear(year) ? 29 : 28) : monthDates[month];
 };
 
 
@@ -302,7 +302,7 @@ exports.getDaysInYear = function (year, month, date, isNatualMonth) {
     var days = date;
 
     while (month--) {
-        days += this.getDaysInMonth(year, month);
+        days += exports.getDaysInMonth(year, month);
     }
 
     return days;
@@ -329,7 +329,7 @@ exports.getWeeksInYear = function (year, month, date, isNatualMonth) {
     var i = 0;
 
     for (; i < month; i++) {
-        pastDate += this.getDaysInMonth(year, i);
+        pastDate += exports.getDaysInMonth(year, i);
     }
 
     return Math.ceil(pastDate / 7);

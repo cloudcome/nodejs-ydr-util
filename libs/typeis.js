@@ -171,7 +171,7 @@ for (; i < jud.length; i++) {
  * // => true
  */
 typeis.plainObject = function (obj) {
-    return this(obj) === 'object' && Object.getPrototypeOf(obj) === Object.prototype;
+    return typeis(obj) === 'object' && Object.getPrototypeOf(obj) === Object.prototype;
 };
 
 
@@ -180,7 +180,7 @@ typeis.plainObject = function (obj) {
  * @param obj {*}
  */
 typeis.emptyObject = function (obj) {
-    return this.plainObject(obj) && Object.keys(obj).length === 0;
+    return typeis.plainObject(obj) && Object.keys(obj).length === 0;
 };
 
 
@@ -194,7 +194,7 @@ typeis.emptyObject = function (obj) {
  * // => true
  */
 typeis.url = function (string) {
-    return this(string) === 'string' && REG_URL.test(string);
+    return typeis(string) === 'string' && REG_URL.test(string);
 };
 
 
@@ -208,7 +208,7 @@ typeis.url = function (string) {
  * // => true
  */
 typeis.email = function (string) {
-    return this(string) === 'string' && REG_EMAIL.test(string);
+    return typeis(string) === 'string' && REG_EMAIL.test(string);
 };
 
 

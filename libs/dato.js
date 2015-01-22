@@ -64,7 +64,7 @@ exports.each = function (list, callback, context) {
 
     // 数组 或 类似数组
     if (list && list.length !== udf) {
-        for (i = 0, j = this.parseInt(list.length, 0); i < j; i++) {
+        for (i = 0, j = exports.parseInt(list.length, 0); i < j; i++) {
             context = context || list[i];
             if (callback.call(context, i, list[i]) === false) {
                 break;
@@ -128,10 +128,10 @@ exports.extend = function (isExtendDeep, source, target) {
                 type = typeis(obj[i]);
                 if (type === 'object' && isExtendDeep) {
                     source[i] = source[i] || {};
-                    this.extend.call(this, isExtendDeep, source[i], obj[i]);
+                    exports.extend.call(this, isExtendDeep, source[i], obj[i]);
                 } else if (type === 'array' && isExtendDeep) {
                     source[i] = source[i] || [];
-                    this.extend.call(this, isExtendDeep, source[i], obj[i]);
+                    exports.extend.call(this, isExtendDeep, source[i], obj[i]);
                 } else {
                     source[i] = obj[i];
                 }
@@ -254,7 +254,7 @@ exports.compare = function (obj1, obj2) {
 
     // 对象
     if (obj1Type === 'object' || obj1Type === 'array') {
-        this.each(obj1, function (key, val) {
+        exports.each(obj1, function (key, val) {
             if (obj2[key] !== val) {
                 obj1Only.push(key);
             } else {
@@ -262,7 +262,7 @@ exports.compare = function (obj1, obj2) {
             }
         });
 
-        this.each(obj2, function (key, val) {
+        exports.each(obj2, function (key, val) {
             if (obj1[key] !== val) {
                 obj2Only.push(key);
             }
@@ -308,7 +308,7 @@ exports.fixRegExp = function (regExpString) {
  */
 exports.bytes = function (string, doubleLength) {
     string += '';
-    doubleLength = this.parseInt(doubleLength, 2);
+    doubleLength = exports.parseInt(doubleLength, 2);
 
     var i = 0,
         j = string.length,

@@ -130,7 +130,7 @@ exports.create = function (property, superConstructor, isInheritStatic) {
     }
 
     if (superConstructorType !== 'undefined' && superConstructorType === 'function') {
-        this.inherit(property.constructor, superConstructor, isInheritStatic);
+        exports.inherit(property.constructor, superConstructor, isInheritStatic);
     }
 
     STATIC = property.STATIC || {};

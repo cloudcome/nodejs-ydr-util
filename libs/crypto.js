@@ -107,7 +107,7 @@ exports.lastModified = function (file) {
 
     ret = stats ? String(new Date(stats.mtime).getTime()) : '0';
 
-    return this.md5(ret);
+    return exports.md5(ret);
 };
 
 
