@@ -444,7 +444,7 @@ exports.removeComments = function (str) {
 
 /**
  * base64 to ascii
- * @param base64
+ * @param ascii
  */
 exports.atob = function (ascii) {
     try {
