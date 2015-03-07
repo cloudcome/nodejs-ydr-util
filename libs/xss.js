@@ -184,15 +184,15 @@ function _regExp(regstr) {
 }
 
 
-//var fs = require('fs');
-//var path = require('path');
-//var file1 = path.join(__dirname, '../test/test.md');
-//var file2 = path.join(__dirname, '../test/test2.md');
-//var file3 = path.join(__dirname, '../test/test2.html');
-//var markdown1 = fs.readFileSync(file1, 'utf8');
-//var markdown2 = exports.mdSafe(markdown1);
-//var html3 = exports.mdRender(markdown2);
-//
-//fs.writeFileSync(file2, markdown2, 'utf8');
-//fs.writeFileSync(file3, html3, 'utf8');
-//
+var fs = require('fs');
+var path = require('path');
+var file1 = path.join(__dirname, '../test/test.md');
+var file2 = path.join(__dirname, '../test/test2.md');
+var file3 = path.join(__dirname, '../test/test2.html');
+var markdown1 = fs.readFileSync(file1, 'utf8');
+var markdown2 = exports.mdSafe(markdown1);
+var html3 = exports.mdRender(markdown2);
+
+fs.writeFileSync(file2, markdown2, 'utf8');
+fs.writeFileSync(file3, html3, 'utf8');
+
