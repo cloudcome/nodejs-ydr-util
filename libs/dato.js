@@ -11,7 +11,7 @@ var qs = require('querystring');
 var path = require('path');
 var typeis = require('./typeis.js');
 var crypto = require('./crypto.js');
-var request = require('./request.js');
+//var request = require('./request.js');
 var udf;
 var canListTypeArr = 'array object nodelist htmlcollection'.split(' ');
 var REG_STRING_FIX = /[.*+?^=!:${}()|[\]/\\]/g;
