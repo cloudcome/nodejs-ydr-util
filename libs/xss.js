@@ -14,6 +14,11 @@ var REG_DOUBLE = /^\/\//;
 var REG_POINT = /\./g;
 var REG_LT = /</g;
 var REG_GT = />/g;
+var REG_SHAP = /^#/;
+var REG_NOT_WORD = /[^\w]/g;
+var RGE_FIRST = /^-/;
+var REG_TOC = /^#heading-/;
+var TMPLATE = '{{=depth}}- [{{= text }}](#heading-{{= href }})\n';
 // 空白
 //var REG_SPACE = /[\x00-\x20\x7F-\xA0\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF\t\v]{1,}/g;
 var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
@@ -84,7 +89,20 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
         ret += item;
     });
 
-    return ret;
+    var tokens = marked.lexer(source);
+    var toc = '';
+
+    tokens.forEach(function (token) {
+        if (token.type !== 'heading') {
+            return;
+        }
+
+        var depth = new Array((token.depth - 1) * 4 + 1).join(' ');
+
+        toc += depth + '- [' + token.text + '](#heading-' + _buildHref(token.text) + ')\n';
+    });
+
+    return toc + '\n\n' + ret;
 };
 
 
@@ -100,6 +118,10 @@ exports.mdRender = function (source, filterOptions) {
 
     // 定义 A 链接的 target
     markedRender.link = function (href, title, text) {
+        if (REG_SHAP.test(href)) {
+            return _buildLink(href, title, text, false);
+        }
+
         var fixHref = REG_DOUBLE.test(href) ? 'http:' + href : href;
         var parse = url.parse(fixHref);
         var host = parse.host;
@@ -130,7 +152,18 @@ exports.mdRender = function (source, filterOptions) {
         return filterOptions.link.filter(href, title, text);
     };
 
+
+    markedRender.heading = function (text, level) {
+        var href = _buildHref(text);
+
+        return '<h' + level + ' id="heading-' + href + '"><a class="heading-link" ' +
+            'href="#toc-' + href + '">' +
+            text + '</a></h' + level + '>';
+    };
+
+
     marked.setOptions({renderer: markedRender});
+
     return marked(source);
 };
 
@@ -151,10 +184,26 @@ exports.mdRender = function (source, filterOptions) {
  */
 function _buildLink(href, title, text, isBlank) {
     text = text.trim();
+
     return '<a href="' + href + '"' +
+        (REG_TOC.test(href) ? ' id="toc-' + href.replace(REG_TOC, '') + '"' : '') +
         (isBlank ? ' target="_blank"' : '') +
         (title ? ' ' + title : '') +
         '>' + (text || href) + '</a>';
+}
+
+
+/**
+ * 构建连接地址
+ * @param text
+ * @returns {string}
+ * @private
+ */
+function _buildHref(text) {
+    return encodeURIComponent(text)
+        .toLowerCase()
+        .replace(REG_NOT_WORD, '-')
+        .replace(RGE_FIRST, '');
 }
 
 
@@ -195,4 +244,10 @@ var html3 = exports.mdRender(markdown2);
 
 fs.writeFileSync(file2, markdown2, 'utf8');
 fs.writeFileSync(file3, html3, 'utf8');
+
+//var REG_HEADING = /^(#+)\s+(.*)$/mg;
+//console.log(markdown1.match(REG_HEADING));
+
+
+
 
