@@ -31,6 +31,15 @@ methods.forEach(function (method) {
      * @param options {String|Object}
      * @param callback {Function}
      */
+
+    /**
+     * @name exports
+     * @property head {Function}
+     * @property get {Function}
+     * @property post {Function}
+     * @property put {Function}
+     * @property delete {Function}
+     */
     exports[method] = function (options, callback) {
         if (typeis(options) === 'string') {
             options = {

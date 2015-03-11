@@ -1,4 +1,5 @@
 {
+  ".123": "application/vnd.lotus-1-2-3",
   ".3dml": "text/vnd.in3d.3dml",
   ".3ds": "image/x-3ds",
   ".3g2": "video/3gpp2",
@@ -434,7 +435,7 @@
   ".maker": "application/vnd.framemaker",
   ".man": "text/troff",
   ".mar": "application/octet-stream",
-  ".markdown": "text/html",
+  ".markdown": "text/plain",
   ".mathml": "application/mathml+xml",
   ".mb": "application/mathematica",
   ".mbk": "application/vnd.mobius.mbk",
@@ -442,7 +443,7 @@
   ".mc1": "application/vnd.medcalcdata",
   ".mcd": "application/vnd.mcd",
   ".mcurl": "text/vnd.curl.mcurl",
-  ".md": "text/html",
+  ".md": "text/plain",
   ".mdb": "application/x-msaccess",
   ".mdi": "image/vnd.ms-modi",
   ".me": "text/troff",
@@ -1018,6 +1019,5 @@
   ".zip": "application/zip",
   ".zir": "application/vnd.zul",
   ".zirz": "application/vnd.zul",
-  ".zmm": "application/vnd.handheld-entertainment+xml",
-  ".123": "application/vnd.lotus-1-2-3"
+  ".zmm": "application/vnd.handheld-entertainment+xml"
 }
