@@ -26,6 +26,7 @@ var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
 var REG_CLOSE_TAGNAME = /(?!```)<([a-z\d]+)\b[\s\S]*?>([\s\S]*?)<\/\1>(?!```)/ig;
 var REG_PRE = /```[\s\S]*?```/g;
 var REG_PATH = /^(\/|\.{0,2})(\/[^/]+)+$/;
+var REG_TOC = /<!--toc start-->[\s\S]*?<!--toc end-->/;
 // 影响页面的危险标签
 var dangerTagNameList = 'script iframe frameset body head html link'.split(' ');
 var filterDefaults = {
@@ -89,8 +90,33 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
         ret += item;
     });
 
+    return ret;
+
+    //var tokens = marked.lexer(source);
+    //var toc = '<!--toc start-->';
+    //
+    //tokens.forEach(function (token) {
+    //    if (token.type !== 'heading') {
+    //        return;
+    //    }
+    //
+    //    var depth = new Array((token.depth - 1) * 4 + 1).join(' ');
+    //
+    //    toc += depth + '- [' + token.text + '](#heading-' + _buildHref(token.text) + ')\n';
+    //});
+    //
+    //return toc + '\n\n<!--toc end-->' + ret;
+};
+
+
+/**
+ * table of content
+ * @param source {String} 原始内容
+ * @returns {string}
+ */
+exports.mdTOC = function (source) {
     var tokens = marked.lexer(source);
-    var toc = '';
+    var toc = '<!--toc start-->\n';
 
     tokens.forEach(function (token) {
         if (token.type !== 'heading') {
@@ -102,8 +128,9 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
         toc += depth + '- [' + token.text + '](#heading-' + _buildHref(token.text) + ')\n';
     });
 
-    return toc + '\n\n' + ret;
+    return toc + '\n\n<!--toc end-->';
 };
+
 
 
 /**
@@ -232,22 +259,17 @@ function _regExp(regstr) {
     return new RegExp('^' + ret + '$', 'i');
 }
 
-//
+
 //var fs = require('fs');
 //var path = require('path');
 //var file1 = path.join(__dirname, '../test/test.md');
 //var file2 = path.join(__dirname, '../test/test2.md');
 //var file3 = path.join(__dirname, '../test/test2.html');
-//var markdown1 = fs.readFileSync(file1, 'utf8');
-//var markdown2 = exports.mdSafe(markdown1);
-//var html3 = exports.mdRender(markdown2);
-//
-//fs.writeFileSync(file2, markdown2, 'utf8');
+//var md1 = fs.readFileSync(file1, 'utf8');
+//var md2 = exports.mdSafe(md1);
+//var html3 = exports.mdRender(md2);
+
+//console.log(exports.mdTOC(md1));
+
+//fs.writeFileSync(file2, md2, 'utf8');
 //fs.writeFileSync(file3, html3, 'utf8');
-
-//var REG_HEADING = /^(#+)\s+(.*)$/mg;
-//console.log(markdown1.match(REG_HEADING));
-
-
-
-
