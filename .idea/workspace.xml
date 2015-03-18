@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7d2d6cea-1388-49ae-a7c4-bfd2d21436b1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/dato.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/package.json" afterPath="$PROJECT_DIR$/package.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/dato.js" afterPath="$PROJECT_DIR$/test/dato.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libs/xss.js" afterPath="$PROJECT_DIR$/libs/xss.js" />
     </list>
     <ignored path="nodejs-ydr-util.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,8 +63,8 @@
       <file leaf-file-name="dato.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/test/dato.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.35934958" vertical-offset="0" max-vertical-offset="615">
-              <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.44227642" vertical-offset="0" max-vertical-offset="615">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -91,9 +89,9 @@
         <option value="$PROJECT_DIR$/libs/crypto.js" />
         <option value="$PROJECT_DIR$/test/request.js" />
         <option value="$PROJECT_DIR$/libs/dato.js" />
-        <option value="$PROJECT_DIR$/test/dato.js" />
         <option value="$PROJECT_DIR$/libs/xss.js" />
         <option value="$PROJECT_DIR$/package.json" />
+        <option value="$PROJECT_DIR$/test/dato.js" />
       </list>
     </option>
   </component>
@@ -290,7 +288,7 @@
       <workItem from="1426496577888" duration="319000" />
       <workItem from="1426497595116" duration="69000" />
       <workItem from="1426556090512" duration="545000" />
-      <workItem from="1426671870807" duration="3673000" />
+      <workItem from="1426671870807" duration="3723000" />
     </task>
     <task id="LOCAL-00001" summary="idea">
       <created>1421932981878</created>
@@ -388,11 +386,17 @@
       <option name="project" value="LOCAL" />
       <updated>1426687173622</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="toc">
+      <created>1426688289111</created>
+      <option name="number" value="00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1426688289111</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="14750000" />
+    <option name="totallyTimeSpent" value="14800000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="735" extended-state="6" />
@@ -448,11 +452,11 @@
     <MESSAGE value="this" />
     <MESSAGE value="class" />
     <MESSAGE value="xss" />
-    <MESSAGE value="toc" />
     <MESSAGE value="mime等" />
     <MESSAGE value="toc etc" />
     <MESSAGE value="dato.extend" />
-    <option name="LAST_COMMIT_MESSAGE" value="dato.extend" />
+    <MESSAGE value="toc" />
+    <option name="LAST_COMMIT_MESSAGE" value="toc" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -688,8 +692,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/dato.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35934958" vertical-offset="0" max-vertical-offset="615">
-          <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.44227642" vertical-offset="0" max-vertical-offset="615">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
