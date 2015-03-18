@@ -18,7 +18,6 @@ var REG_SHAP = /^#/;
 var REG_NOT_WORD = /[^\w]/g;
 var RGE_FIRST = /^-/;
 var REG_TOC = /^#heading-/;
-var TMPLATE = '{{=depth}}- [{{= text }}](#heading-{{= href }})\n';
 // 空白
 //var REG_SPACE = /[\x00-\x20\x7F-\xA0\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF\t\v]{1,}/g;
 var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
@@ -26,7 +25,6 @@ var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
 var REG_CLOSE_TAGNAME = /(?!```)<([a-z\d]+)\b[\s\S]*?>([\s\S]*?)<\/\1>(?!```)/ig;
 var REG_PRE = /```[\s\S]*?```/g;
 var REG_PATH = /^(\/|\.{0,2})(\/[^/]+)+$/;
-var REG_TOC = /<!--toc start-->[\s\S]*?<!--toc end-->/;
 // 影响页面的危险标签
 var dangerTagNameList = 'script iframe frameset body head html link'.split(' ');
 var filterDefaults = {
