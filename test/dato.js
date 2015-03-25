@@ -8,13 +8,13 @@
 
 var dato = require('../libs/dato.js');
 
-var data1 = {};
-var data2 = {
-    a: 1,
-    b: 2
-};
-var data3 = dato.extend(data1, data2);
-
-console.log(data1);
-console.log(data2);
-console.log(data3);
+//var data1 = {};
+//var data2 = {
+//    a: 1,
+//    b: 2
+//};
+//var data3 = dato.extend(data1, data2);
+//
+//console.log(data1);
+//console.log(data2);
+//console.log(data3);

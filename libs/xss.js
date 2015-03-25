@@ -9,6 +9,7 @@
 var marked = require('marked');
 var typeis = require('./typeis.js');
 var dato = require('./dato.js');
+var crypto = require('./crypto.js');
 var url = require('url');
 var REG_DOUBLE = /^\/\//;
 var REG_POINT = /\./g;
@@ -100,7 +101,7 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
     //
     //    var depth = new Array((token.depth - 1) * 4 + 1).join(' ');
     //
-    //    toc += depth + '- [' + token.text + '](#heading-' + _buildHref(token.text) + ')\n';
+    //    toc += depth + '- [' + token.text + '](#heading-' + crypto.md5(token.text) + ')\n';
     //});
     //
     //return toc + '\n\n<!--toc end-->' + ret;
@@ -114,7 +115,8 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
  */
 exports.mdTOC = function (source) {
     var tokens = marked.lexer(source);
-    var toc = '<!--toc start-->\n';
+    var toc = '<!--toc start-->\n\n';
+    var index = 0;
 
     tokens.forEach(function (token) {
         if (token.type !== 'heading') {
@@ -123,12 +125,11 @@ exports.mdTOC = function (source) {
 
         var depth = new Array((token.depth - 1) * 4 + 1).join(' ');
 
-        toc += depth + '- [' + token.text + '](#heading-' + _buildHref(token.text) + ')\n';
+        toc += depth + '- [' + token.text + '](#h' + token.depth + '-' + (index++) + '-' + crypto.md5(token.text) + ')\n';
     });
 
     return toc + '\n\n<!--toc end-->';
 };
-
 
 
 /**
@@ -178,12 +179,18 @@ exports.mdRender = function (source, filterOptions) {
     };
 
 
-    markedRender.heading = function (text, level) {
-        var href = _buildHref(text);
+    var index = 0;
 
-        return '<h' + level + ' id="heading-' + href + '"><a class="heading-link" ' +
-            'href="#toc-' + href + '">' +
+    markedRender.heading = function (text, level) {
+        var href = crypto.md5(text);
+
+        var html = '<h' + level + ' id="h' + level + '-' + index + '-' + href + '"><a class="heading-link" ' +
+            'href="#toc-' + level + '-' + index + '-' + href + '">' +
             text + '</a></h' + level + '>';
+
+        index++;
+
+        return html;
     };
 
 
@@ -219,20 +226,6 @@ function _buildLink(href, title, text, isBlank) {
 
 
 /**
- * 构建连接地址
- * @param text
- * @returns {string}
- * @private
- */
-function _buildHref(text) {
-    return encodeURIComponent(text)
-        .toLowerCase()
-        .replace(REG_NOT_WORD, '-')
-        .replace(RGE_FIRST, '');
-}
-
-
-/**
  * 生成正则
  * @param regstr
  * @returns {RegExp}
@@ -258,16 +251,13 @@ function _regExp(regstr) {
 }
 
 
-//var fs = require('fs');
-//var path = require('path');
-//var file1 = path.join(__dirname, '../test/test.md');
-//var file2 = path.join(__dirname, '../test/test2.md');
-//var file3 = path.join(__dirname, '../test/test2.html');
-//var md1 = fs.readFileSync(file1, 'utf8');
-//var md2 = exports.mdSafe(md1);
-//var html3 = exports.mdRender(md2);
+var fs = require('fs');
+var path = require('path');
+var file1 = path.join(__dirname, '../test/test.md');
+var file2 = path.join(__dirname, '../test/test.html');
+var md1 = fs.readFileSync(file1, 'utf8');
 
-//console.log(exports.mdTOC(md1));
+var toc = exports.mdRender(exports.mdTOC(md1));
+var content = exports.mdRender(md1);
 
-//fs.writeFileSync(file2, md2, 'utf8');
-//fs.writeFileSync(file3, html3, 'utf8');
+fs.writeFileSync(file2, toc + content, 'utf8');
