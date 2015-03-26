@@ -115,7 +115,7 @@ exports.mdSafe = function (source, moreDangerTagNameList) {
  */
 exports.mdTOC = function (source) {
     var tokens = marked.lexer(source);
-    var toc = '<!--toc start-->\n\n';
+    var toc = '\n\n';
     var index = 0;
 
     tokens.forEach(function (token) {
@@ -128,7 +128,7 @@ exports.mdTOC = function (source) {
         toc += depth + '- [' + token.text + '](#h' + token.depth + '-' + (index++) + '-' + crypto.md5(token.text) + ')\n';
     });
 
-    return toc + '\n\n<!--toc end-->';
+    return toc + '\n\n';
 };
 
 
