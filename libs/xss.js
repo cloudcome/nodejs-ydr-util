@@ -18,7 +18,7 @@ var REG_GT = />/g;
 var REG_SHAP = /^#/;
 var REG_NOT_WORD = /[^\w]/g;
 var RGE_FIRST = /^-/;
-var REG_TOC = /^#heading-/;
+var REG_TOC = /^#heading(-\d-\d+-.*)$/;
 // 空白
 //var REG_SPACE = /[\x00-\x20\x7F-\xA0\u1680\u180E\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF\t\v]{1,}/g;
 var REG_LONG_BREAK_LINE = /[\n\r]{3,}/g;
@@ -125,7 +125,7 @@ exports.mdTOC = function (source) {
 
         var depth = new Array((token.depth - 1) * 4 + 1).join(' ');
 
-        toc += depth + '- [' + token.text + '](#h' + token.depth + '-' + (index++) + '-' + crypto.md5(token.text) + ')\n';
+        toc += depth + '- [' + token.text + '](#heading-' + token.depth + '-' + (index++) + '-' + crypto.md5(token.text) + ')\n';
     });
 
     return toc + '\n\n';
@@ -184,7 +184,7 @@ exports.mdRender = function (source, filterOptions) {
     markedRender.heading = function (text, level) {
         var href = crypto.md5(text);
 
-        var html = '<h' + level + ' id="h' + level + '-' + index + '-' + href + '"><a class="heading-link" ' +
+        var html = '<h' + level + ' id="heading-' + level + '-' + index + '-' + href + '"><a class="heading-link" ' +
             'href="#toc-' + level + '-' + index + '-' + href + '">' +
             text + '</a></h' + level + '>';
 
@@ -218,7 +218,7 @@ function _buildLink(href, title, text, isBlank) {
     text = text.trim();
 
     return '<a href="' + href + '"' +
-        (REG_TOC.test(href) ? ' id="toc-' + href.replace(REG_TOC, '') + '"' : '') +
+        (REG_TOC.test(href) ? ' id="toc' + href.replace(REG_TOC, '$1') + '"' : '') +
         (isBlank ? ' target="_blank"' : '') +
         (title ? ' ' + title : '') +
         '>' + (text || href) + '</a>';
