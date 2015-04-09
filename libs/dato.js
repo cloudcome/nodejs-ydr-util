@@ -50,7 +50,7 @@ exports.parseFloat = function (obj, dft) {
 /**
  * 遍历元素
  * @param {Array/Object} list  数组、可枚举对象
- * @param {Function(this:data, key, val)} callback  回调，返回false时停止遍历
+ * @param {Function} callback  回调，返回false时停止遍历
  * @param {*} [context] 上下文
  *
  * @example
@@ -65,7 +65,7 @@ exports.each = function (list, callback, context) {
     // 数组 或 类似数组
     if (list && list.length !== udf) {
         for (i = 0, j = exports.parseInt(list.length, 0); i < j; i++) {
-            context = context || list[i];
+            context = context || global;
             if (callback.call(context, i, list[i]) === false) {
                 break;
             }
@@ -75,7 +75,7 @@ exports.each = function (list, callback, context) {
     else if (list !== null && list !== udf) {
         for (i in list) {
             if (list.hasOwnProperty(i)) {
-                context = context || list[i];
+                context = context || global;
                 if (callback.call(context, i, list[i]) === false) {
                     break;
                 }
@@ -146,36 +146,9 @@ exports.extend = function (isExtendDeep, source, target) {
 };
 
 
-
-/**
- * 萃取
- * @param data {Object} 传递的数据
- * @param keys {Array} 摘取的键数组
- * @param [filter] {Function} 过滤方法，默认取不为 undefined 键值
- * @returns {Object}
- */
-exports.pick = function (data, keys, filter) {
-    var data2 = {};
-
-    data = data || {};
-
-    filter = filter || function (val) {
-        return val !== undefined;
-    };
-
-    keys.forEach(function (key) {
-        if (filter(data[key])) {
-            data2[key] = data[key];
-        }
-    });
-
-    return data2;
-};
-
-
 /**
  * 转换对象为一个纯数组，只要对象有length属性即可
- * @param {Object} [data] 对象
+ * @param {Object} [obj] 对象
  * @param {Boolean} [isConvertWhole] 是否转换整个对象为数组中的第0个元素，当该对象无length属性时，默认false
  * @returns {Array}
  *
@@ -207,7 +180,6 @@ exports.toArray = function (obj, isConvertWhole) {
 
     return ret;
 };
-
 
 ///**
 // * 判断一个对象是否有属于自身的方法、属性，而不是原型链方法、属性以及其他继承来的方法、属性
@@ -551,7 +523,7 @@ exports.than = function (long1, long2, operator) {
  * @param [options] {Object} 配置
  * @param [options.host="http://gravatar.duoshuo.com/avatar/"] {String} 服务器
  * @param [options.size=100] {Number} 尺寸
- * @param [options.default="mm"] {Number} 默认头像
+ * @param [options.default="retro"] {Number} 默认头像
  * @param [options.forcedefault=false] {*} 是否忽略默认头像
  * @param [options.rating] {*} 评级
  * @returns {string}
@@ -572,7 +544,7 @@ exports.gravatar = function (email, options) {
 
     if (!options.default) {
         //options.default = 'http://s.ydr.me/p/i/avatar.png';
-        options.default = 'mm';
+        options.default = 'retro';
     }
 
     if (options.forcedefault) {
